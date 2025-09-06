@@ -1,0 +1,6 @@
+@echo off
+echo Starting HMS Frontend Server...
+cd /d "M:\hms\Newhms-fixed-v11\frontend\hms-frontend"
+echo Starting Vite development server...
+npm run dev
+pause
