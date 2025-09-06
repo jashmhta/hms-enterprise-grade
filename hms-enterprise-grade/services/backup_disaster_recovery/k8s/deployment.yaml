@@ -1,0 +1,68 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backup-disaster-recovery-service
+  labels:
+    app: backup-disaster-recovery
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: backup-disaster-recovery
+  template:
+    metadata:
+      labels:
+        app: backup-disaster-recovery
+    spec:
+      containers:
+      - name: backup-service
+        image: backup-disaster-recovery-service:latest
+        ports:
+        - containerPort: 8006
+        env:
+        - name: DATABASE_URL
+          valueFrom:
+            secretKeyRef:
+              name: backup-db-secret
+              key: database-url
+        - name: AWS_ACCESS_KEY_ID
+          valueFrom:
+            secretKeyRef:
+              name: aws-credentials
+              key: access-key
+        - name: AWS_SECRET_ACCESS_KEY
+          valueFrom:
+            secretKeyRef:
+              name: aws-credentials
+              key: secret-key
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "250m"
+          limits:
+            memory: "512Mi"
+            cpu: "500m"
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8006
+          initialDelaySeconds: 30
+          periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 8006
+          initialDelaySeconds: 5
+          periodSeconds: 5
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: backup-disaster-recovery-service
+spec:
+  selector:
+    app: backup-disaster-recovery
+  ports:
+  - port: 8006
+    targetPort: 8006
+  type: ClusterIP

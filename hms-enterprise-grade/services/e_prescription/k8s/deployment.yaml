@@ -1,0 +1,58 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: e-prescription-service
+  labels:
+    app: e-prescription
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: e-prescription
+  template:
+    metadata:
+      labels:
+        app: e-prescription
+    spec:
+      containers:
+      - name: e-prescription
+        image: e-prescription-service:latest
+        ports:
+        - containerPort: 8005
+        env:
+        - name: DATABASE_URL
+          valueFrom:
+            secretKeyRef:
+              name: prescription-db-secret
+              key: database-url
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8005
+          initialDelaySeconds: 30
+          periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 8005
+          initialDelaySeconds: 5
+          periodSeconds: 5
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "250m"
+          limits:
+            memory: "512Mi"
+            cpu: "500m"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: e-prescription-service
+spec:
+  selector:
+    app: e-prescription
+  ports:
+  - port: 8005
+    targetPort: 8005
+  type: ClusterIP
