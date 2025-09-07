@@ -5,10 +5,8 @@ from fastapi import Depends, FastAPI, Header, HTTPException
 from jose import JWTError, jwt
 from prometheus_fastapi_instrumentator import Instrumentator
 from pydantic import BaseModel
-from sqlalchemy import (Column, Date, ForeignKey, Integer, String, Time,
-                        create_engine)
-from sqlalchemy.orm import (Session, declarative_base, relationship,
-                            sessionmaker)
+from sqlalchemy import Column, Date, ForeignKey, Integer, String, Time, create_engine
+from sqlalchemy.orm import Session, declarative_base, relationship, sessionmaker
 
 DATABASE_URL = os.getenv("HR_DATABASE_URL", "postgresql+psycopg2://hms:hms@db:5432/hms")
 JWT_SECRET = os.getenv("JWT_SECRET", "change-me")

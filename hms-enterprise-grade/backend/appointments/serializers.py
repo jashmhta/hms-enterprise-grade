@@ -1,9 +1,16 @@
 from django.core.exceptions import ValidationError as DjangoValidationError
 from rest_framework import serializers
 
-from .models import (Appointment, AppointmentHistory, AppointmentReminder,
-                     AppointmentResource, AppointmentStatus,
-                     AppointmentTemplate, Resource, WaitList)
+from .models import (
+    Appointment,
+    AppointmentHistory,
+    AppointmentReminder,
+    AppointmentResource,
+    AppointmentStatus,
+    AppointmentTemplate,
+    Resource,
+    WaitList,
+)
 
 
 class ResourceSerializer(serializers.ModelSerializer):

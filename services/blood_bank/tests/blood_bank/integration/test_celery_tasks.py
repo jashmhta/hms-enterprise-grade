@@ -4,8 +4,7 @@ from unittest.mock import MagicMock, patch
 import pytest
 from django.test import TestCase
 
-from ..app.tasks import (check_expiry_alerts, purge_old_audit_logs,
-                         send_sms_expiry_alert)
+from ..app.tasks import check_expiry_alerts, purge_old_audit_logs, send_sms_expiry_alert
 
 
 @pytest.mark.django_db

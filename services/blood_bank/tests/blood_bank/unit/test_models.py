@@ -3,8 +3,13 @@ from datetime import date, timedelta
 import pytest
 from django.db import IntegrityError
 
-from ..app.models import (BLOOD_TYPES, BloodInventory, Crossmatch, Donor,
-                          TransfusionRecord)
+from ..app.models import (
+    BLOOD_TYPES,
+    BloodInventory,
+    Crossmatch,
+    Donor,
+    TransfusionRecord,
+)
 
 
 @pytest.mark.django_db

@@ -5,8 +5,7 @@ import pytest
 from django.contrib.auth import get_user_model
 from django.test import Client
 from django.urls import reverse
-from insurance_tpa.models import (InsuranceProvider, Patient, TPAAuthorization,
-                                  TPAClaim)
+from insurance_tpa.models import InsuranceProvider, Patient, TPAAuthorization, TPAClaim
 
 User = get_user_model()
 

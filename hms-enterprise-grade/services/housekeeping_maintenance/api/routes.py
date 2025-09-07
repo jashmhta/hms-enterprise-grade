@@ -4,10 +4,17 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
 from ..models import models
-from ..schemas import (AssetUpkeepCreate, AssetUpkeepRead, AssetUpkeepUpdate,
-                       CleaningTaskCreate, CleaningTaskRead,
-                       CleaningTaskUpdate, MaintenanceRequestCreate,
-                       MaintenanceRequestRead, MaintenanceRequestUpdate)
+from ..schemas import (
+    AssetUpkeepCreate,
+    AssetUpkeepRead,
+    AssetUpkeepUpdate,
+    CleaningTaskCreate,
+    CleaningTaskRead,
+    CleaningTaskUpdate,
+    MaintenanceRequestCreate,
+    MaintenanceRequestRead,
+    MaintenanceRequestUpdate,
+)
 
 router = APIRouter()
 

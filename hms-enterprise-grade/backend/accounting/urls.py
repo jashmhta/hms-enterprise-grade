@@ -5,19 +5,38 @@ URL configuration for accounting module.
 from django.urls import include, path
 from rest_framework.routers import DefaultRouter
 
-from .views import (AccountingAuditLogViewSet, AccountingInvoiceViewSet,
-                    AccountingPaymentViewSet, BankAccountViewSet,
-                    BankTransactionViewSet, BookLockViewSet, BudgetViewSet,
-                    ChartOfAccountsViewSet, ComplianceDocumentViewSet,
-                    CostCenterViewSet, CurrencyViewSet, CustomerViewSet,
-                    DashboardAPIView, DepreciationProcessingAPIView,
-                    ExpenseViewSet, ExportAPIView, FinancialYearViewSet,
-                    FixedAssetViewSet, InsuranceClaimViewSet,
-                    LedgerEntryViewSet, PayrollEntryViewSet,
-                    PricingTierViewSet, RecurringInvoiceViewSet,
-                    ReportsAPIView, ServicePackageViewSet,
-                    TaxConfigurationViewSet, TaxLiabilityAPIView,
-                    TDSEntryViewSet, VendorPayoutViewSet, VendorViewSet)
+from .views import (
+    AccountingAuditLogViewSet,
+    AccountingInvoiceViewSet,
+    AccountingPaymentViewSet,
+    BankAccountViewSet,
+    BankTransactionViewSet,
+    BookLockViewSet,
+    BudgetViewSet,
+    ChartOfAccountsViewSet,
+    ComplianceDocumentViewSet,
+    CostCenterViewSet,
+    CurrencyViewSet,
+    CustomerViewSet,
+    DashboardAPIView,
+    DepreciationProcessingAPIView,
+    ExpenseViewSet,
+    ExportAPIView,
+    FinancialYearViewSet,
+    FixedAssetViewSet,
+    InsuranceClaimViewSet,
+    LedgerEntryViewSet,
+    PayrollEntryViewSet,
+    PricingTierViewSet,
+    RecurringInvoiceViewSet,
+    ReportsAPIView,
+    ServicePackageViewSet,
+    TaxConfigurationViewSet,
+    TaxLiabilityAPIView,
+    TDSEntryViewSet,
+    VendorPayoutViewSet,
+    VendorViewSet,
+)
 
 # Create router and register viewsets
 router = DefaultRouter()

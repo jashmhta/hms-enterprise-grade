@@ -1,7 +1,14 @@
 from django.contrib import admin
 
-from .models import (Allergy, Assessment, ClinicalNote, Encounter,
-                     EncounterAttachment, PlanOfCare, VitalSigns)
+from .models import (
+    Allergy,
+    Assessment,
+    ClinicalNote,
+    Encounter,
+    EncounterAttachment,
+    PlanOfCare,
+    VitalSigns,
+)
 
 
 @admin.register(Encounter)

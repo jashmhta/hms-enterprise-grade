@@ -11,8 +11,12 @@ from rest_framework.response import Response
 from rest_framework_simplejwt.authentication import JWTAuthentication
 
 from .models import BloodInventory, Crossmatch, Donor, TransfusionRecord
-from .serializers import (BloodInventorySerializer, CrossmatchSerializer,
-                          DonorSerializer, TransfusionRecordSerializer)
+from .serializers import (
+    BloodInventorySerializer,
+    CrossmatchSerializer,
+    DonorSerializer,
+    TransfusionRecordSerializer,
+)
 
 
 class IsAdminOrDoctorPermission(permissions.BasePermission):

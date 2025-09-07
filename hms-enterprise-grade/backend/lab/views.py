@@ -5,8 +5,7 @@ from rest_framework.exceptions import PermissionDenied
 from rest_framework.permissions import IsAuthenticated
 
 from .models import LabOrder, LabResult, LabTest
-from .serializers import (LabOrderSerializer, LabResultSerializer,
-                          LabTestSerializer)
+from .serializers import LabOrderSerializer, LabResultSerializer, LabTestSerializer
 
 # Create your views here.
 

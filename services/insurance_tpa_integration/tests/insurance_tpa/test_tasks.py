@@ -8,8 +8,12 @@ from django.utils import timezone
 from fakeredis import FakeStrictRedis
 from insurance_tpa.factories.factories import *
 from insurance_tpa.models import Claim, PreAuth, Reimbursement
-from insurance_tpa.tasks import (cleanup_old_records, poll_tpa_status,
-                                 send_notification, submit_tpa_request)
+from insurance_tpa.tasks import (
+    cleanup_old_records,
+    poll_tpa_status,
+    send_notification,
+    submit_tpa_request,
+)
 
 
 @pytest.mark.django_db

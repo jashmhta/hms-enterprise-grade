@@ -5,8 +5,14 @@ from hospitals.models import HospitalPlan
 from rest_framework import serializers
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 
-from .models import (Department, User, UserCredential, UserLoginHistory,
-                     UserPermissionGroup, UserSession)
+from .models import (
+    Department,
+    User,
+    UserCredential,
+    UserLoginHistory,
+    UserPermissionGroup,
+    UserSession,
+)
 
 User = get_user_model()
 

@@ -14,10 +14,20 @@ from django.db import models, transaction
 from django.utils import timezone
 from openpyxl.styles import Border, Font, PatternFill, Side
 
-from .models import (AccountingInvoice, AccountingPayment, BankTransaction,
-                     ChartOfAccounts, Currency, DepreciationSchedule, Expense,
-                     FinancialYear, FixedAsset, LedgerEntry, PayrollEntry,
-                     TaxLiability)
+from .models import (
+    AccountingInvoice,
+    AccountingPayment,
+    BankTransaction,
+    ChartOfAccounts,
+    Currency,
+    DepreciationSchedule,
+    Expense,
+    FinancialYear,
+    FixedAsset,
+    LedgerEntry,
+    PayrollEntry,
+    TaxLiability,
+)
 
 
 class DoubleEntryBookkeeping:

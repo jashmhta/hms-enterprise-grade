@@ -9,16 +9,43 @@ from django.utils import timezone
 from django.utils.html import format_html
 from django.utils.safestring import mark_safe
 
-from .models import (AccountingAuditLog, AccountingInvoice, AccountingPayment,
-                     AccountingPeriod, BankAccount, BankTransaction, BookLock,
-                     Budget, ChartOfAccounts, ComplianceDocument, CostCenter,
-                     Currency, Customer, DepreciationSchedule, Expense,
-                     ExportLog, FinancialYear, FixedAsset, ImportBatch,
-                     InsuranceClaim, InvoiceLineItem, LedgerEntry,
-                     PayrollEntry, PricingTier, ProviderCommissionStructure,
-                     RecurringInvoice, ReportSchedule, ServicePackage,
-                     ServicePackageItem, TaxConfiguration, TaxLiability,
-                     TDSEntry, Vendor, VendorPayout, VendorPayoutItem)
+from .models import (
+    AccountingAuditLog,
+    AccountingInvoice,
+    AccountingPayment,
+    AccountingPeriod,
+    BankAccount,
+    BankTransaction,
+    BookLock,
+    Budget,
+    ChartOfAccounts,
+    ComplianceDocument,
+    CostCenter,
+    Currency,
+    Customer,
+    DepreciationSchedule,
+    Expense,
+    ExportLog,
+    FinancialYear,
+    FixedAsset,
+    ImportBatch,
+    InsuranceClaim,
+    InvoiceLineItem,
+    LedgerEntry,
+    PayrollEntry,
+    PricingTier,
+    ProviderCommissionStructure,
+    RecurringInvoice,
+    ReportSchedule,
+    ServicePackage,
+    ServicePackageItem,
+    TaxConfiguration,
+    TaxLiability,
+    TDSEntry,
+    Vendor,
+    VendorPayout,
+    VendorPayoutItem,
+)
 
 # Configuration Models Admin
 

@@ -60,8 +60,7 @@ import sys
 sys.path.append("/root/hms_app/hmsupdt/backend")
 import enum
 
-from sqlalchemy import (Column, DateTime, Enum, ForeignKey, Index, Integer,
-                        String)
+from sqlalchemy import Column, DateTime, Enum, ForeignKey, Index, Integer, String
 from sqlalchemy.orm import relationship
 
 

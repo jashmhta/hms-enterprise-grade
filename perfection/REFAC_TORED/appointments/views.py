@@ -7,19 +7,28 @@ from django.utils import timezone
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import permissions, status
 from rest_framework.filters import DjangoFilterBackend, OrderingFilter
-from rest_framework.generics import (CreateAPIView, DestroyAPIView,
-                                     ListAPIView, RetrieveAPIView,
-                                     UpdateAPIView)
+from rest_framework.generics import (
+    CreateAPIView,
+    DestroyAPIView,
+    ListAPIView,
+    RetrieveAPIView,
+    UpdateAPIView,
+)
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from .models.appointment_model import Appointment
-from .serializers import (AppointmentCreateSerializer, AppointmentSerializer,
-                          AppointmentUpdateSerializer)
-from .services.appointment_service import (AppointmentService,
-                                           InvalidAppointmentError,
-                                           SchedulingConflictError)
+from .serializers import (
+    AppointmentCreateSerializer,
+    AppointmentSerializer,
+    AppointmentUpdateSerializer,
+)
+from .services.appointment_service import (
+    AppointmentService,
+    InvalidAppointmentError,
+    SchedulingConflictError,
+)
 
 logger = logging.getLogger(__name__)
 

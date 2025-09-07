@@ -12,14 +12,24 @@ from rest_framework.exceptions import PermissionDenied
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
-from .models import (Appointment, AppointmentHistory, AppointmentReminder,
-                     AppointmentStatus, AppointmentTemplate, Resource,
-                     WaitList)
-from .serializers import (AppointmentBasicSerializer,
-                          AppointmentHistorySerializer,
-                          AppointmentReminderSerializer, AppointmentSerializer,
-                          AppointmentTemplateSerializer, ResourceSerializer,
-                          WaitListSerializer)
+from .models import (
+    Appointment,
+    AppointmentHistory,
+    AppointmentReminder,
+    AppointmentStatus,
+    AppointmentTemplate,
+    Resource,
+    WaitList,
+)
+from .serializers import (
+    AppointmentBasicSerializer,
+    AppointmentHistorySerializer,
+    AppointmentReminderSerializer,
+    AppointmentSerializer,
+    AppointmentTemplateSerializer,
+    ResourceSerializer,
+    WaitListSerializer,
+)
 
 
 class AppointmentTemplateViewSet(viewsets.ModelViewSet):

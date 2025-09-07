@@ -5,8 +5,7 @@ from rest_framework.exceptions import PermissionDenied
 from rest_framework.permissions import IsAuthenticated
 
 from .models import DutyRoster, LeaveRequest, Shift
-from .serializers import (DutyRosterSerializer, LeaveRequestSerializer,
-                          ShiftSerializer)
+from .serializers import DutyRosterSerializer, LeaveRequestSerializer, ShiftSerializer
 
 # Create your views here.
 

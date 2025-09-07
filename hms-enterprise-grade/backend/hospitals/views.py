@@ -4,8 +4,7 @@ from rest_framework.exceptions import PermissionDenied
 from rest_framework.permissions import IsAuthenticated
 
 from .models import Hospital, HospitalPlan, Plan
-from .serializers import (HospitalPlanSerializer, HospitalSerializer,
-                          PlanSerializer)
+from .serializers import HospitalPlanSerializer, HospitalSerializer, PlanSerializer
 
 # Create your views here.
 

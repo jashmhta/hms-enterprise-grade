@@ -5,8 +5,7 @@ from django.contrib.auth.models import AbstractUser, Group, Permission
 from django.core.validators import RegexValidator
 from django.db import models
 from django.utils import timezone
-from encrypted_model_fields.fields import (EncryptedCharField,
-                                           EncryptedEmailField)
+from encrypted_model_fields.fields import EncryptedCharField, EncryptedEmailField
 
 
 class UserRole(models.TextChoices):

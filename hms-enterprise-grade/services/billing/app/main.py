@@ -4,8 +4,7 @@ from typing import List, Optional
 from fastapi import Depends, FastAPI, HTTPException
 from pydantic import BaseModel
 from sqlalchemy import Column, ForeignKey, Integer, String, create_engine
-from sqlalchemy.orm import (Session, declarative_base, relationship,
-                            sessionmaker)
+from sqlalchemy.orm import Session, declarative_base, relationship, sessionmaker
 
 DATABASE_URL = os.getenv(
     "BILLING_DATABASE_URL", "postgresql+psycopg2://hms:hms@db:5432/hms"

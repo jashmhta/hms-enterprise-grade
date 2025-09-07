@@ -5,9 +5,11 @@ from core.models import TenantModel
 from django.core.validators import RegexValidator
 from django.db import models
 from django.utils import timezone
-from encrypted_model_fields.fields import (EncryptedCharField,
-                                           EncryptedEmailField,
-                                           EncryptedTextField)
+from encrypted_model_fields.fields import (
+    EncryptedCharField,
+    EncryptedEmailField,
+    EncryptedTextField,
+)
 
 
 class PatientGender(models.TextChoices):

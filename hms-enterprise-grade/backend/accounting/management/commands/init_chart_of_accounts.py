@@ -2,8 +2,7 @@
 Management command to initialize Chart of Accounts for hospitals.
 """
 
-from accounting.models import (AccountSubType, AccountType, ChartOfAccounts,
-                               Currency)
+from accounting.models import AccountSubType, AccountType, ChartOfAccounts, Currency
 from django.core.management.base import BaseCommand
 from hospitals.models import Hospital
 

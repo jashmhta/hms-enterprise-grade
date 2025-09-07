@@ -1,7 +1,6 @@
 from rest_framework import serializers
 
-from .models import (Bill, BillLineItem, DepartmentBudget, Payment,
-                     ServiceCatalog)
+from .models import Bill, BillLineItem, DepartmentBudget, Payment, ServiceCatalog
 
 
 class BillLineItemSerializer(serializers.ModelSerializer):

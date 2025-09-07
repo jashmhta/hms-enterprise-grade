@@ -8,8 +8,11 @@ from rest_framework.exceptions import PermissionDenied
 from rest_framework.permissions import IsAuthenticated
 
 from .models import InventoryTransaction, Medication, Prescription
-from .serializers import (InventoryTransactionSerializer, MedicationSerializer,
-                          PrescriptionSerializer)
+from .serializers import (
+    InventoryTransactionSerializer,
+    MedicationSerializer,
+    PrescriptionSerializer,
+)
 
 # Create your views here.
 

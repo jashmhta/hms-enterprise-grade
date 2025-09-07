@@ -13,11 +13,14 @@ from rest_framework import decorators, response, viewsets
 from rest_framework.exceptions import PermissionDenied
 from rest_framework.permissions import IsAuthenticated
 
-from .models import (Bill, BillLineItem, DepartmentBudget, Payment,
-                     ServiceCatalog)
-from .serializers import (BillLineItemSerializer, BillSerializer,
-                          DepartmentBudgetSerializer, PaymentSerializer,
-                          ServiceCatalogSerializer)
+from .models import Bill, BillLineItem, DepartmentBudget, Payment, ServiceCatalog
+from .serializers import (
+    BillLineItemSerializer,
+    BillSerializer,
+    DepartmentBudgetSerializer,
+    PaymentSerializer,
+    ServiceCatalogSerializer,
+)
 
 
 class TenantScopedViewSet(viewsets.ModelViewSet):

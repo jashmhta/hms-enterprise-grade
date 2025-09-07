@@ -7,8 +7,11 @@ from rest_framework.exceptions import PermissionDenied
 from rest_framework.permissions import IsAuthenticated
 
 from .models import Encounter, EncounterAttachment, EncounterNote
-from .serializers import (EncounterAttachmentSerializer,
-                          EncounterNoteSerializer, EncounterSerializer)
+from .serializers import (
+    EncounterAttachmentSerializer,
+    EncounterNoteSerializer,
+    EncounterSerializer,
+)
 
 # Create your views here.
 

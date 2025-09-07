@@ -1,7 +1,13 @@
 from django.contrib import admin
 
-from .models import (Appointment, AppointmentHistory, AppointmentReminder,
-                     AppointmentTemplate, Resource, WaitList)
+from .models import (
+    Appointment,
+    AppointmentHistory,
+    AppointmentReminder,
+    AppointmentTemplate,
+    Resource,
+    WaitList,
+)
 
 
 @admin.register(Appointment)

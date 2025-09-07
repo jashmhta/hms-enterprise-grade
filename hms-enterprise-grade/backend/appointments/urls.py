@@ -1,8 +1,13 @@
 from rest_framework.routers import DefaultRouter
 
-from .views import (AppointmentHistoryViewSet, AppointmentReminderViewSet,
-                    AppointmentTemplateViewSet, AppointmentViewSet,
-                    ResourceViewSet, WaitListViewSet)
+from .views import (
+    AppointmentHistoryViewSet,
+    AppointmentReminderViewSet,
+    AppointmentTemplateViewSet,
+    AppointmentViewSet,
+    ResourceViewSet,
+    WaitListViewSet,
+)
 
 router = DefaultRouter()
 router.register(r"appointments", AppointmentViewSet, basename="appointment")
