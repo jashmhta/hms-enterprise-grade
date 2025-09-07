@@ -12,7 +12,7 @@
    - Doctor rounds and progress notes
    - Medication administration records
    - Vital signs monitoring
-   
+
 3. **Billing & Insurance Integration**
    - Inpatient billing system
    - Insurance claim generation

@@ -1,0 +1,11 @@
+repos:
+- repo: https://github.com/pre-commit/pre-commit-hooks
+  rev: v4.6.0
+- hooks:
+  - black
+  repo: https://github.com/psf/black
+  rev: 23.3.0
+- hooks:
+  - mypy
+  repo: https://github.com/pre-commit/mirrors-mypy
+  rev: v1.5.1

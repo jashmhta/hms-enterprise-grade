@@ -4,7 +4,7 @@
 
 ### Option 1: Using Batch Files (Recommended)
 1. **Start Backend Server**:
-   - Double-click `start-backend.bat` 
+   - Double-click `start-backend.bat`
    - This will start the Django server at http://127.0.0.1:8000
 
 2. **Start Frontend Server**:

@@ -6,25 +6,25 @@
    - Blood type categorization (A+, A-, B+, B-, AB+, AB-, O+, O-)
    - Expiration date tracking and alerts
    - Stock level monitoring and replenishment
-   
+
 2. **Donor Management**
    - Donor registration and screening
    - Donation history tracking
    - Donor eligibility criteria
    - Donor communication and appointment scheduling
-   
+
 3. **Blood Transfusion Management**
    - Transfusion request processing
    - Blood compatibility checking
    - Transfusion documentation
    - Adverse reaction tracking
-   
+
 4. **Testing & Quality Control**
    - Blood testing results management
    - Quality control procedures
    - Regulatory compliance tracking
    - Laboratory integration
-   
+
 5. **Reporting & Analytics**
    - Inventory reports
    - Usage statistics

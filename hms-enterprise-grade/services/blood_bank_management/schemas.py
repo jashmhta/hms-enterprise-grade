@@ -1,7 +1,9 @@
-from pydantic import BaseModel, Field
-from typing import Optional, List, Dict, Any
 from datetime import datetime
 from enum import Enum
+from typing import Any, Dict, List, Optional
+
+from pydantic import BaseModel, Field
+
 
 class BloodType(str, Enum):
     A_POSITIVE = "A+"
@@ -12,6 +14,7 @@ class BloodType(str, Enum):
     AB_NEGATIVE = "AB-"
     O_POSITIVE = "O+"
     O_NEGATIVE = "O-"
+
 
 class BloodUnitBase(BaseModel):
     unit_number: str
@@ -26,8 +29,10 @@ class BloodUnitBase(BaseModel):
     storage_location: str
     notes: Optional[str] = None
 
+
 class BloodUnitCreate(BloodUnitBase):
     pass
+
 
 class BloodUnit(BloodUnitBase):
     id: int
@@ -36,6 +41,7 @@ class BloodUnit(BloodUnitBase):
 
     class Config:
         from_attributes = True
+
 
 class DonorBase(BaseModel):
     donor_id: str
@@ -52,8 +58,10 @@ class DonorBase(BaseModel):
     last_donation_date: Optional[datetime] = None
     total_donations: int = 0
 
+
 class DonorCreate(DonorBase):
     pass
+
 
 class Donor(DonorBase):
     id: int
@@ -63,6 +71,7 @@ class Donor(DonorBase):
 
     class Config:
         from_attributes = True
+
 
 class DonationBase(BaseModel):
     donation_id: str
@@ -75,8 +84,10 @@ class DonationBase(BaseModel):
     status: str
     notes: Optional[str] = None
 
+
 class DonationCreate(DonationBase):
     pass
+
 
 class Donation(DonationBase):
     id: int
@@ -84,6 +95,7 @@ class Donation(DonationBase):
 
     class Config:
         from_attributes = True
+
 
 class TransfusionRequestBase(BaseModel):
     request_id: str
@@ -101,8 +113,10 @@ class TransfusionRequestBase(BaseModel):
     fulfilled_units: int = 0
     notes: Optional[str] = None
 
+
 class TransfusionRequestCreate(TransfusionRequestBase):
     pass
+
 
 class TransfusionRequest(TransfusionRequestBase):
     id: int
@@ -111,6 +125,7 @@ class TransfusionRequest(TransfusionRequestBase):
 
     class Config:
         from_attributes = True
+
 
 class TransfusionBase(BaseModel):
     transfusion_id: str
@@ -124,8 +139,10 @@ class TransfusionBase(BaseModel):
     outcome: str
     notes: Optional[str] = None
 
+
 class TransfusionCreate(TransfusionBase):
     pass
+
 
 class Transfusion(TransfusionBase):
     id: int
@@ -133,6 +150,7 @@ class Transfusion(TransfusionBase):
 
     class Config:
         from_attributes = True
+
 
 class BloodTestBase(BaseModel):
     test_id: str
@@ -143,8 +161,10 @@ class BloodTestBase(BaseModel):
     performed_by: str
     notes: Optional[str] = None
 
+
 class BloodTestCreate(BloodTestBase):
     pass
+
 
 class BloodTest(BloodTestBase):
     id: int
@@ -152,6 +172,7 @@ class BloodTest(BloodTestBase):
 
     class Config:
         from_attributes = True
+
 
 class InventoryAlertBase(BaseModel):
     alert_type: str
@@ -165,8 +186,10 @@ class InventoryAlertBase(BaseModel):
     resolved_by: Optional[str] = None
     resolved_at: Optional[datetime] = None
 
+
 class InventoryAlertCreate(InventoryAlertBase):
     pass
+
 
 class InventoryAlert(InventoryAlertBase):
     id: int
@@ -174,6 +197,7 @@ class InventoryAlert(InventoryAlertBase):
 
     class Config:
         from_attributes = True
+
 
 class BloodInventorySummary(BaseModel):
     blood_type: BloodType
@@ -183,11 +207,13 @@ class BloodInventorySummary(BaseModel):
     reserved_units: int
     expired_units: int
 
+
 class DonationStatistics(BaseModel):
     total_donations: int
     monthly_donations: int
     donor_count: int
     blood_type_distribution: Dict[str, int]
+
 
 class TransfusionStatistics(BaseModel):
     total_transfusions: int

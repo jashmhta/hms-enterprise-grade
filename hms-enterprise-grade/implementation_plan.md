@@ -2,7 +2,7 @@
 
 ## Current Status: 14.3% Complete (4/28 modules)
 - ✅ OPD Management
-- ✅ IPD Management  
+- ✅ IPD Management
 - ✅ Blood Bank Management
 - ✅ Cybersecurity Enhancements
 

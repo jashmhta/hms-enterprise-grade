@@ -2,6 +2,7 @@
 import subprocess
 import sys
 
+
 def run_command(command):
     try:
         result = subprocess.run(command, shell=True, capture_output=True, text=True)
@@ -9,13 +10,22 @@ def run_command(command):
     except Exception as e:
         return False, "", str(e)
 
+
 print("Validating Blood Bank Management Service Enterprise-Grade Implementation...")
 
 # Check required files
 required_files = [
-    "Dockerfile", "requirements.txt", "models.py", "schemas.py",
-    "crud.py", "main.py", "database.py", "tests/test_blood_bank_management.py",
-    "docker-compose.yml", "k8s/deployment.yaml", "README.md"
+    "Dockerfile",
+    "requirements.txt",
+    "models.py",
+    "schemas.py",
+    "crud.py",
+    "main.py",
+    "database.py",
+    "tests/test_blood_bank_management.py",
+    "docker-compose.yml",
+    "k8s/deployment.yaml",
+    "README.md",
 ]
 
 print("\n1. File Completeness Check:")
@@ -43,7 +53,7 @@ for file in syntax_files:
 
 print(f"\n3. Implementation Status:")
 print("✅ Database Models Complete")
-print("✅ Pydantic Schemas Complete") 
+print("✅ Pydantic Schemas Complete")
 print("✅ CRUD Operations Complete")
 print("✅ RESTful API Complete")
 print("✅ Testing Suite Complete")
@@ -62,9 +72,9 @@ print("✅ Transfusion Management")
 print("✅ Quality Control")
 print("✅ Inventory Alerts")
 
-print("\n" + "="*70)
+print("\n" + "=" * 70)
 print("BLOOD BANK MANAGEMENT SERVICE - ENTERPRISE GRADE IMPLEMENTATION COMPLETE")
-print("="*70)
+print("=" * 70)
 print("Status: ✅ Production Ready")
 print("Compliance: HIPAA, FDA, ISO 15189, AABB")
 print("Architecture: Microservice with FastAPI & PostgreSQL")

@@ -1,10 +1,13 @@
-from sqlalchemy import Column, Integer, String, DateTime, Float, Boolean, ForeignKey, Text, JSON, Enum
-from sqlalchemy.orm import relationship
-from sqlalchemy.ext.declarative import declarative_base
-from datetime import datetime
 import enum
+from datetime import datetime
+
+from sqlalchemy import (JSON, Boolean, Column, DateTime, Enum, Float,
+                        ForeignKey, Integer, String, Text)
+from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import relationship
 
 Base = declarative_base()
+
 
 class BloodType(enum.Enum):
     A_POSITIVE = "A+"
@@ -16,9 +19,10 @@ class BloodType(enum.Enum):
     O_POSITIVE = "O+"
     O_NEGATIVE = "O-"
 
+
 class BloodUnit(Base):
     __tablename__ = "blood_units"
-    
+
     id = Column(Integer, primary_key=True, index=True)
     unit_number = Column(String, unique=True)
     blood_type = Column(Enum(BloodType))
@@ -33,12 +37,13 @@ class BloodUnit(Base):
     notes = Column(Text, nullable=True)
     created_at = Column(DateTime, default=datetime.utcnow)
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
-    
+
     donor = relationship("Donor")
+
 
 class Donor(Base):
     __tablename__ = "donors"
-    
+
     id = Column(Integer, primary_key=True, index=True)
     donor_id = Column(String, unique=True)
     first_name = Column(String)
@@ -50,16 +55,19 @@ class Donor(Base):
     contact_number = Column(String)
     email = Column(String, nullable=True)
     address = Column(Text, nullable=True)
-    eligibility_status = Column(String)  # eligible, temporary_deferral, permanent_deferral
+    eligibility_status = Column(
+        String
+    )  # eligible, temporary_deferral, permanent_deferral
     last_donation_date = Column(DateTime, nullable=True)
     total_donations = Column(Integer, default=0)
     is_active = Column(Boolean, default=True)
     created_at = Column(DateTime, default=datetime.utcnow)
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
+
 class Donation(Base):
     __tablename__ = "donations"
-    
+
     id = Column(Integer, primary_key=True, index=True)
     donation_id = Column(String, unique=True)
     donor_id = Column(Integer, ForeignKey("donors.id"))
@@ -71,12 +79,13 @@ class Donation(Base):
     status = Column(String)  # collected, tested, approved, rejected
     notes = Column(Text, nullable=True)
     created_at = Column(DateTime, default=datetime.utcnow)
-    
+
     donor = relationship("Donor")
+
 
 class TransfusionRequest(Base):
     __tablename__ = "transfusion_requests"
-    
+
     id = Column(Integer, primary_key=True, index=True)
     request_id = Column(String, unique=True)
     patient_id = Column(Integer)
@@ -95,9 +104,10 @@ class TransfusionRequest(Base):
     created_at = Column(DateTime, default=datetime.utcnow)
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
+
 class Transfusion(Base):
     __tablename__ = "transfusions"
-    
+
     id = Column(Integer, primary_key=True, index=True)
     transfusion_id = Column(String, unique=True)
     request_id = Column(Integer, ForeignKey("transfusion_requests.id"))
@@ -110,13 +120,14 @@ class Transfusion(Base):
     outcome = Column(String)  # successful, partial, adverse_reaction
     notes = Column(Text, nullable=True)
     created_at = Column(DateTime, default=datetime.utcnow)
-    
+
     blood_unit = relationship("BloodUnit")
     request = relationship("TransfusionRequest")
 
+
 class BloodTest(Base):
     __tablename__ = "blood_tests"
-    
+
     id = Column(Integer, primary_key=True, index=True)
     test_id = Column(String, unique=True)
     blood_unit_id = Column(Integer, ForeignKey("blood_units.id"))
@@ -126,12 +137,13 @@ class BloodTest(Base):
     performed_by = Column(String)
     notes = Column(Text, nullable=True)
     created_at = Column(DateTime, default=datetime.utcnow)
-    
+
     blood_unit = relationship("BloodUnit")
+
 
 class InventoryAlert(Base):
     __tablename__ = "inventory_alerts"
-    
+
     id = Column(Integer, primary_key=True, index=True)
     alert_type = Column(String)  # low_stock, expiration, critical_stock
     blood_type = Column(Enum(BloodType))
