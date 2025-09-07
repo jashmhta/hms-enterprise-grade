@@ -334,6 +334,7 @@ if os.getenv('SENTRY_DSN'):
     )
 
 # Celery beat
+INSTALLED_APPS.append('django_celery_beat')
 
 X_FRAME_OPTIONS = 'DENY'
 
