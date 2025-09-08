@@ -28,5 +28,5 @@ opentelemetry-instrumentation-django
 opentelemetry-instrumentation-requests
 opentelemetry-instrumentation-psycopg2
 kafka-python==2.0.2
-six==1.16.0
+six==1.17.0
 django-encrypted-model-fields==0.6.5
