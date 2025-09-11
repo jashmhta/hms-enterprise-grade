@@ -1,1 +1,0 @@
-fastapi\nuvicorn\nSQLAlchemy\npsycopg2-binary\npydantic

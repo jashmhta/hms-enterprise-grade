@@ -1,9 +1,0 @@
-*.pyc
-__pycache__/
-/workspace/.venv/
-.env
-*.sqlite3
-node_modules/
-frontend/dist/
-.DS_Store
-keys/

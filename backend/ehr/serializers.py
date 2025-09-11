@@ -22,5 +22,5 @@ class EncounterSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Encounter
-        fields = ['id', 'hospital', 'patient', 'primary_physician', 'appointment', 'diagnosis', 'treatment', 'prescription_text', 'is_finalized', 'notes', 'attachments', 'created_at', 'updated_at']
+        fields = ['id', 'hospital', 'patient', 'doctor', 'appointment', 'diagnosis', 'treatment', 'prescription_text', 'is_finalized', 'notes', 'attachments', 'created_at', 'updated_at']
         read_only_fields = ['id', 'created_at', 'updated_at', 'notes', 'attachments']

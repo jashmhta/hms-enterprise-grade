@@ -1,0 +1,207 @@
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: hms-postgres-cluster
+  namespace: hms-production
+spec:
+  instances: 3
+  
+  postgresql:
+    parameters:
+      max_connections: "200"
+      shared_buffers: "256MB"
+      effective_cache_size: "1GB"
+      maintenance_work_mem: "64MB"
+      checkpoint_completion_target: "0.9"
+      wal_buffers: "16MB"
+      default_statistics_target: "100"
+      random_page_cost: "1.1"
+      effective_io_concurrency: "200"
+      work_mem: "4MB"
+      min_wal_size: "2GB"
+      max_wal_size: "8GB"
+      max_worker_processes: "8"
+      max_parallel_workers_per_gather: "4"
+      max_parallel_workers: "8"
+      max_parallel_maintenance_workers: "4"
+      log_min_duration_statement: "1000"
+      log_checkpoints: "on"
+      log_connections: "on"
+      log_disconnections: "on"
+      log_lock_waits: "on"
+      log_statement: "mod"
+      ssl: "on"
+      ssl_cert_file: "/opt/certs/server.crt"
+      ssl_key_file: "/opt/certs/server.key"
+      ssl_ca_file: "/opt/certs/ca.crt"
+
+  bootstrap:
+    initdb:
+      database: hms_production
+      owner: hms_user
+      secret:
+        name: hms-postgres-credentials
+      postInitApplicationSQL:
+        - "CREATE EXTENSION IF NOT EXISTS pg_stat_statements;"
+        - "CREATE EXTENSION IF NOT EXISTS pgcrypto;"
+        - "CREATE EXTENSION IF NOT EXISTS uuid-ossp;"
+        - "CREATE EXTENSION IF NOT EXISTS pg_trgm;"
+
+  primaryUpdateStrategy: unsupervised
+  
+  resources:
+    requests:
+      memory: "4Gi"
+      cpu: "2"
+    limits:
+      memory: "8Gi"
+      cpu: "4"
+
+  storage:
+    size: 100Gi
+    storageClass: "fast-ssd"
+
+  monitoring:
+    enabled: true
+    podMonitorMetricRelabelings:
+    - sourceLabels: [__name__]
+      regex: 'pg_stat_database_.*'
+      action: keep
+
+  backup:
+    retentionPolicy: "30d"
+    barmanObjectStore:
+      destinationPath: "s3://hms-backups/postgres"
+      s3Credentials:
+        accessKeyId:
+          name: backup-credentials
+          key: ACCESS_KEY_ID
+        secretAccessKey:
+          name: backup-credentials
+          key: SECRET_ACCESS_KEY
+      wal:
+        retention: "7d"
+      data:
+        retention: "30d"
+        jobs: 2
+
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: hms-postgres-credentials
+  namespace: hms-production
+type: kubernetes.io/basic-auth
+stringData:
+  username: hms_user
+  password: "CHANGE_ME_SECURE_PASSWORD_123!"
+
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: backup-credentials
+  namespace: hms-production
+type: Opaque
+stringData:
+  ACCESS_KEY_ID: "CHANGE_ME"
+  SECRET_ACCESS_KEY: "CHANGE_ME"
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: redis-cluster
+  namespace: hms-production
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: redis
+  template:
+    metadata:
+      labels:
+        app: redis
+    spec:
+      containers:
+      - name: redis
+        image: redis:7-alpine
+        ports:
+        - containerPort: 6379
+        command:
+        - redis-server
+        - --requirepass
+        - $(REDIS_PASSWORD)
+        - --maxmemory
+        - 2gb
+        - --maxmemory-policy
+        - allkeys-lru
+        - --save
+        - "900 1"
+        - --appendonly
+        - "yes"
+        env:
+        - name: REDIS_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: redis-credentials
+              key: password
+        resources:
+          requests:
+            memory: "1Gi"
+            cpu: "500m"
+          limits:
+            memory: "2Gi"
+            cpu: "1"
+        volumeMounts:
+        - name: redis-data
+          mountPath: /data
+        securityContext:
+          runAsNonRoot: true
+          runAsUser: 999
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+            - ALL
+      volumes:
+      - name: redis-data
+        persistentVolumeClaim:
+          claimName: redis-pvc
+
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: redis-credentials
+  namespace: hms-production
+type: Opaque
+stringData:
+  password: "CHANGE_ME_REDIS_PASSWORD_456!"
+
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: redis-pvc
+  namespace: hms-production
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 50Gi
+  storageClassName: fast-ssd
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: redis-service
+  namespace: hms-production
+spec:
+  selector:
+    app: redis
+  ports:
+  - port: 6379
+    targetPort: 6379
+  type: ClusterIP

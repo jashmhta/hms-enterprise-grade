@@ -1,0 +1,131 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: hms-production-network-policy
+  namespace: hms-production
+spec:
+  podSelector: {}
+  policyTypes:
+  - Ingress
+  - Egress
+  ingress:
+  - from:
+    - namespaceSelector:
+        matchLabels:
+          name: istio-system
+    - namespaceSelector:
+        matchLabels:
+          name: hms-production
+    - podSelector:
+        matchLabels:
+          app: hms-backend
+    - podSelector:
+        matchLabels:
+          app: hms-frontend
+  egress:
+  - to:
+    - namespaceSelector:
+        matchLabels:
+          name: kube-system
+  - to:
+    - namespaceSelector:
+        matchLabels:
+          name: istio-system
+  - to: []
+    ports:
+    - protocol: TCP
+      port: 53
+    - protocol: UDP
+      port: 53
+    - protocol: TCP
+      port: 443
+    - protocol: TCP
+      port: 5432  # PostgreSQL
+    - protocol: TCP
+      port: 6379  # Redis
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: hms-backend-sa
+  namespace: hms-production
+  annotations:
+    eks.amazonaws.com/role-arn: arn:aws:iam::ACCOUNT_ID:role/hms-backend-role
+automountServiceAccountToken: true
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: hms-frontend-sa
+  namespace: hms-production
+automountServiceAccountToken: false
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  namespace: hms-production
+  name: hms-backend-role
+rules:
+- apiGroups: [""]
+  resources: ["secrets", "configmaps"]
+  verbs: ["get", "list"]
+- apiGroups: [""]
+  resources: ["pods"]
+  verbs: ["get", "list", "watch"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: hms-backend-binding
+  namespace: hms-production
+subjects:
+- kind: ServiceAccount
+  name: hms-backend-sa
+  namespace: hms-production
+roleRef:
+  kind: Role
+  name: hms-backend-role
+  apiGroup: rbac.authorization.k8s.io
+---
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: hms-backend-pdb
+  namespace: hms-production
+spec:
+  minAvailable: 2
+  selector:
+    matchLabels:
+      app: hms-backend
+---
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: hms-frontend-pdb
+  namespace: hms-production
+spec:
+  minAvailable: 1
+  selector:
+    matchLabels:
+      app: hms-frontend
+---
+apiVersion: security.istio.io/v1beta1
+kind: AuthorizationPolicy
+metadata:
+  name: hms-backend-authz
+  namespace: hms-production
+spec:
+  selector:
+    matchLabels:
+      app: hms-backend
+  rules:
+  - from:
+    - source:
+        principals: ["cluster.local/ns/hms-production/sa/hms-frontend-sa"]
+  - from:
+    - source:
+        principals: ["cluster.local/ns/istio-system/sa/istio-ingressgateway-service-account"]
+  - to:
+    - operation:
+        methods: ["GET", "POST", "PUT", "DELETE", "PATCH"]
+        paths: ["/api/*", "/admin/*", "/health"]
