@@ -1,4 +1,4 @@
-from core.models import TenantModel, TimeStampedModel
+from core.models import TenantModel
 from django.db import models
 
 
@@ -7,7 +7,10 @@ class Bill(TenantModel):
         "patients.Patient", on_delete=models.CASCADE, related_name="bills"
     )
     appointment = models.ForeignKey(
-        "appointments.Appointment", on_delete=models.SET_NULL, null=True, blank=True
+        "appointments.Appointment",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
     )
     total_cents = models.IntegerField(default=0)
     paid_cents = models.IntegerField(default=0)
@@ -40,11 +43,20 @@ class Bill(TenantModel):
             if paid >= self.net_cents and self.net_cents > 0
             else ("PARTIAL" if 0 < paid < self.net_cents else "DUE")
         )
-        self.save(update_fields=["total_cents", "paid_cents", "net_cents", "status"])
+        self.save(
+            update_fields=[
+                "total_cents",
+                "paid_cents",
+                "net_cents",
+                "status",
+            ]
+        )
 
 
 class BillLineItem(TenantModel):
-    bill = models.ForeignKey(Bill, on_delete=models.CASCADE, related_name="items")
+    bill = models.ForeignKey(
+        Bill, on_delete=models.CASCADE, related_name="items"
+    )
     description = models.CharField(max_length=255)
     quantity = models.IntegerField(default=1)
     unit_price_cents = models.IntegerField(default=0)
@@ -59,7 +71,9 @@ class BillLineItem(TenantModel):
 
 
 class Payment(TenantModel):
-    bill = models.ForeignKey(Bill, on_delete=models.CASCADE, related_name="payments")
+    bill = models.ForeignKey(
+        Bill, on_delete=models.CASCADE, related_name="payments"
+    )
     amount_cents = models.IntegerField()
     method = models.CharField(max_length=32, default="CASH")
     reference = models.CharField(max_length=255, blank=True)

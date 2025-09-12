@@ -1,10 +1,8 @@
-import json
 import uuid
-from datetime import datetime, timedelta
+from datetime import timedelta
 
 from core.models import TenantModel
 from django.core.exceptions import ValidationError
-from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 from django.utils import timezone
 from encrypted_model_fields.fields import EncryptedTextField
@@ -64,7 +62,7 @@ class AppointmentTemplate(TenantModel):
     """Templates for common appointment types"""
 
     name = models.CharField(max_length=200)
-    appointment_type = models.CharField(max_length=20, choices=AppointmentType.choices)
+    appointment_type = models.CharField(max_length=20, choices=AppointmentType.choices)   # noqa: E501
     duration_minutes = models.PositiveIntegerField(default=30)
     description = models.TextField(blank=True)
 
@@ -155,11 +153,15 @@ class Appointment(TenantModel):
     """Enhanced appointment model with enterprise features"""
 
     uuid = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
-    appointment_number = models.CharField(max_length=50, db_index=True, default="TEMP")
+    appointment_number = models.CharField(
+            max_length=50, db_index=True, default="TEMP"
+        )
 
     # Patient & Provider
     patient = models.ForeignKey(
-        "patients.Patient", on_delete=models.CASCADE, related_name="appointments"
+        "patients.Patient",
+        on_delete=models.CASCADE,
+        related_name="appointments",
     )
     primary_provider = models.ForeignKey(
         "users.User",
@@ -173,7 +175,9 @@ class Appointment(TenantModel):
 
     # Appointment Details
     appointment_type = models.CharField(
-        max_length=20, choices=AppointmentType.choices, default=AppointmentType.ROUTINE
+        max_length=20,
+        choices=AppointmentType.choices,
+        default=AppointmentType.ROUTINE,
     )
     template = models.ForeignKey(
         AppointmentTemplate, on_delete=models.SET_NULL, null=True, blank=True
@@ -257,7 +261,9 @@ class Appointment(TenantModel):
     # Recurring Appointments
     is_recurring = models.BooleanField(default=False)
     recurrence_pattern = models.CharField(
-        max_length=15, choices=RecurrencePattern.choices, default=RecurrencePattern.NONE
+        max_length=15,
+        choices=RecurrencePattern.choices,
+        default=RecurrencePattern.NONE,
     )
     recurrence_end_date = models.DateField(null=True, blank=True)
     parent_appointment = models.ForeignKey(
@@ -314,7 +320,10 @@ class Appointment(TenantModel):
             raise ValidationError("end_at must be after start_at")
 
         # Check for overlapping appointments for the same provider
-        if self.status not in [AppointmentStatus.CANCELLED, AppointmentStatus.NO_SHOW]:
+        if self.status not in [
+            AppointmentStatus.CANCELLED,
+            AppointmentStatus.NO_SHOW,
+        ]:
             overlapping = Appointment.objects.filter(
                 hospital=self.hospital,
                 primary_provider=self.primary_provider,
@@ -330,7 +339,7 @@ class Appointment(TenantModel):
             )
 
             if overlapping.exists():
-                raise ValidationError("Overlapping appointment for this provider")
+                raise ValidationError("Overlapping appointment for this provider")   # noqa: E501
 
     def save(self, *args, **kwargs):
         # Generate appointment number if not provided
@@ -352,7 +361,10 @@ class Appointment(TenantModel):
         super().save(*args, **kwargs)
 
     def __str__(self) -> str:
-        return f"{self.patient} with {self.primary_provider} at {timezone.localtime(self.start_at)}"
+        return (
+            f"{self.patient} with {self.primary_provider} at "
+            f"{timezone.localtime(self.start_at)}"
+        )
 
     def get_duration_display(self):
         """Return human-readable duration"""
@@ -373,7 +385,7 @@ class Appointment(TenantModel):
 
         # Check if within cancellation window
         if self.template and self.template.cancellation_hours:
-            cutoff = self.start_at - timedelta(hours=self.template.cancellation_hours)
+            cutoff = self.start_at - timedelta(hours=self.template.cancellation_hours)   # noqa: E501
             return timezone.now() < cutoff
 
         return True
@@ -441,7 +453,7 @@ class AppointmentResource(models.Model):
 
         if overlapping.exists():
             raise ValidationError(
-                f"Resource {self.resource.name} is not available during this time"
+                f"Resource {self.resource.name} is not available during this time"   # noqa: E501
             )
 
 
@@ -449,12 +461,14 @@ class WaitList(TenantModel):
     """Patient wait list for appointments"""
 
     patient = models.ForeignKey(
-        "patients.Patient", on_delete=models.CASCADE, related_name="waitlist_entries"
+        "patients.Patient",
+        on_delete=models.CASCADE,
+        related_name="waitlist_entries",
     )
     provider = models.ForeignKey(
         "users.User", on_delete=models.CASCADE, related_name="waitlist_entries"
     )
-    appointment_type = models.CharField(max_length=20, choices=AppointmentType.choices)
+    appointment_type = models.CharField(max_length=20, choices=AppointmentType.choices)   # noqa: E501
 
     # Preferences
     preferred_date_from = models.DateField()
@@ -591,7 +605,7 @@ class AppointmentHistory(models.Model):
     notes = models.TextField(blank=True)
 
     # Actor information
-    changed_by = models.ForeignKey("users.User", on_delete=models.SET_NULL, null=True)
+    changed_by = models.ForeignKey("users.User", on_delete=models.SET_NULL, null=True)   # noqa: E501
     timestamp = models.DateTimeField(auto_now_add=True)
     ip_address = models.GenericIPAddressField(null=True, blank=True)
 
