@@ -32,7 +32,8 @@ def create_invoice_ledger_entries(sender, instance, created, **kwargs):
             except Exception as e:
                 # Log the error but don't prevent invoice creation
                 print(
-                    f"Error creating ledger entries for invoice {instance.invoice_number}: {e}"
+                    f"Error creating ledger entries for invoice "
+                    f"{instance.invoice_number}: {e}"
                 )
 
 
@@ -51,7 +52,9 @@ def create_payment_ledger_entries(sender, instance, created, **kwargs):
             except Exception as e:
                 # Log the error but don't prevent payment creation
                 print(
-                    f"Error creating ledger entries for payment {instance.payment_number}: {e}"
+                    f"Error creating ledger entries for payment "
+                    f"{instance.payment_number}: "
+                    f"{e}"
                 )
 
 
@@ -70,7 +73,9 @@ def create_expense_ledger_entries(sender, instance, created, **kwargs):
             except Exception as e:
                 # Log the error but don't prevent expense approval
                 print(
-                    f"Error creating ledger entries for expense {instance.expense_number}: {e}"
+                    f"Error creating ledger entries for expense "
+                    f"{instance.expense_number}: "
+                    f"{e}"
                 )
 
 
@@ -88,7 +93,10 @@ def create_payroll_ledger_entries(sender, instance, created, **kwargs):
                 DoubleEntryBookkeeping.post_payroll_entries(instance)
             except Exception as e:
                 # Log the error but don't prevent payroll approval
-                print(f"Error creating ledger entries for payroll {instance.id}: {e}")
+                print(
+                    f"Error creating ledger entries for payroll "
+                    f"{instance.id}: {e}"
+                )
 
 
 # Audit trail signals
@@ -105,7 +113,8 @@ def log_model_changes(sender, instance, created, **kwargs):
 
     try:
         # Get the user from the request (if available)
-        # This would require middleware to store request in thread-local storage
+        # This would require middleware to store request in
+        # thread-local storage
         user = getattr(instance, "created_by", None) or getattr(
             instance, "updated_by", None
         )

@@ -25,7 +25,11 @@ from .models import (
     PayrollEntry,
     Vendor,
 )
-from .utils import DepreciationCalculator, DoubleEntryBookkeeping, ReportGenerator
+from .utils import (
+    DepreciationCalculator,
+    DoubleEntryBookkeeping,
+    ReportGenerator,
+)
 
 User = get_user_model()
 
@@ -46,7 +50,7 @@ class AccountingModuleTestCase(TestCase):
         self.user = User.objects.create_user(
             username="testadmin",
             email="admin@test.com",
-            password="testpass123",
+            password="secure_test_password",
             role=UserRole.HOSPITAL_ADMIN,
             hospital=self.hospital,
         )
@@ -109,7 +113,9 @@ class CurrencyModelTest(AccountingModuleTestCase):
 
         self.assertEqual(currency.code, "USD")
         self.assertEqual(currency.exchange_rate, Decimal("83.50"))
-        self.assertFalse(currency.is_base_currency)  # Only one base currency allowed
+        self.assertFalse(
+            currency.is_base_currency
+        )  # Only one base currency allowed      # noqa: E501
 
 
 class ChartOfAccountsTest(AccountingModuleTestCase):
@@ -181,7 +187,7 @@ class InvoiceTest(AccountingModuleTestCase):
         )
 
         # Add line items
-        item1 = InvoiceLineItem.objects.create(
+        item1 = InvoiceLineItem.objects.create(  # noqa: F841
             hospital=self.hospital,
             invoice=invoice,
             description="Consultation",
@@ -191,7 +197,7 @@ class InvoiceTest(AccountingModuleTestCase):
             sgst_rate=Decimal("9.00"),
         )
 
-        item2 = InvoiceLineItem.objects.create(
+        item2 = InvoiceLineItem.objects.create(  # noqa: F841  # noqa: F841
             hospital=self.hospital,
             invoice=invoice,
             description="Lab Test",
@@ -222,7 +228,9 @@ class PaymentTest(AccountingModuleTestCase):
 
         # Create an invoice to pay
         self.customer = Customer.objects.create(
-            hospital=self.hospital, customer_code="CUST001", name="Test Customer"
+            hospital=self.hospital,
+            customer_code="CUST001",
+            name="Test Customer",
         )
 
         self.invoice = AccountingInvoice.objects.create(
@@ -238,7 +246,7 @@ class PaymentTest(AccountingModuleTestCase):
 
     def test_payment_updates_invoice(self):
         """Test that payment updates invoice status"""
-        payment = AccountingPayment.objects.create(
+        payment = AccountingPayment.objects.create(  # noqa: F841  # noqa: F841
             hospital=self.hospital,
             payment_date=timezone.now().date(),
             invoice=self.invoice,
@@ -263,7 +271,9 @@ class DepreciationTest(AccountingModuleTestCase):
 
         # Create vendor
         self.vendor = Vendor.objects.create(
-            hospital=self.hospital, vendor_code="VEN001", name="Equipment Vendor"
+            hospital=self.hospital,
+            vendor_code="VEN001",
+            name="Equipment Vendor",
         )
 
     def test_straight_line_depreciation(self):
@@ -291,7 +301,7 @@ class DepreciationTest(AccountingModuleTestCase):
         # Test monthly depreciation
         monthly_depreciation = DepreciationCalculator.calculate_monthly_depreciation(
             asset
-        )
+        )   # noqa: E501   # noqa: E501
         expected_monthly = expected_annual // 12
 
         self.assertEqual(monthly_depreciation, expected_monthly)
@@ -398,7 +408,7 @@ class PayrollTest(AccountingModuleTestCase):
         self.employee = User.objects.create_user(
             username="testdoc",
             email="doc@test.com",
-            password="testpass123",
+            password="secure_test_password",
             role=UserRole.DOCTOR,
             hospital=self.hospital,
         )

@@ -1,17 +1,17 @@
 """
 Enterprise-grade accounting models for Hospital Management System.
-Supports billing, expenses, payroll, assets, taxation, compliance, and reporting.
+Supports billing, expenses, payroll, assets, taxation, compliance, and reporting.      # noqa: E501
 """
 
 import uuid
-from datetime import date, datetime
+
 from decimal import Decimal
 
-from core.models import TenantModel, TimeStampedModel
+from core.models import TenantModel
 from django.contrib.auth import get_user_model
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
-from django.db.models import Q, Sum
+from django.db.models import Sum
 from django.utils import timezone
 
 User = get_user_model()
@@ -46,7 +46,10 @@ class AccountSubType(models.TextChoices):
 
     # Expenses
     OPERATING_EXPENSES = "OPERATING_EXPENSES", "Operating Expenses"
-    ADMINISTRATIVE_EXPENSES = "ADMINISTRATIVE_EXPENSES", "Administrative Expenses"
+    ADMINISTRATIVE_EXPENSES = (
+        "ADMINISTRATIVE_EXPENSES",
+        "Administrative Expenses",
+    )
     FINANCIAL_EXPENSES = "FINANCIAL_EXPENSES", "Financial Expenses"
 
 
@@ -58,7 +61,9 @@ class Currency(TenantModel):
     )
     name = models.CharField(max_length=100)
     symbol = models.CharField(max_length=10, default="₹")
-    exchange_rate = models.DecimalField(max_digits=10, decimal_places=4, default=1.0000)
+    exchange_rate = models.DecimalField(
+        max_digits=10, decimal_places=4, default=1.0000
+    )   # noqa: E501
     is_base_currency = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
 
@@ -112,9 +117,15 @@ class ChartOfAccounts(TenantModel):
     )
     account_name = models.CharField(max_length=255)
     account_type = models.CharField(max_length=32, choices=AccountType.choices)
-    account_subtype = models.CharField(max_length=32, choices=AccountSubType.choices)
+    account_subtype = models.CharField(
+        max_length=32, choices=AccountSubType.choices
+    )   # noqa: E501
     parent_account = models.ForeignKey(
-        "self", on_delete=models.CASCADE, null=True, blank=True, related_name="children"
+        "self",
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+        related_name="children",
     )
     description = models.TextField(blank=True)
     is_active = models.BooleanField(default=True)
@@ -133,10 +144,12 @@ class ChartOfAccounts(TenantModel):
     def balance(self):
         """Calculate current account balance"""
         credit_sum = (
-            self.credit_entries.aggregate(total=Sum("amount_cents"))["total"] or 0
+            self.credit_entries.aggregate(total=Sum("amount_cents"))["total"]
+            or 0   # noqa: E501
         )
         debit_sum = (
-            self.debit_entries.aggregate(total=Sum("amount_cents"))["total"] or 0
+            self.debit_entries.aggregate(total=Sum("amount_cents"))["total"]
+            or 0   # noqa: E501
         )
 
         if self.account_type in [AccountType.ASSETS, AccountType.EXPENSES]:
@@ -151,7 +164,9 @@ class CostCenter(TenantModel):
     code = models.CharField(max_length=20)
     name = models.CharField(max_length=255)
     description = models.TextField(blank=True)
-    manager = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
+    manager = models.ForeignKey(
+        User, on_delete=models.SET_NULL, null=True, blank=True
+    )   # noqa: E501
     is_active = models.BooleanField(default=True)
 
     class Meta:
@@ -176,7 +191,9 @@ class Vendor(TenantModel):
     )
     pan = models.CharField(max_length=10, blank=True, help_text="PAN Number")
     tds_category = models.CharField(max_length=50, blank=True)
-    tds_rate = models.DecimalField(max_digits=5, decimal_places=2, default=0.00)
+    tds_rate = models.DecimalField(
+        max_digits=5, decimal_places=2, default=0.00
+    )   # noqa: E501
     payment_terms_days = models.IntegerField(default=30)
     is_active = models.BooleanField(default=True)
 
@@ -256,7 +273,9 @@ class ServicePackageItem(TenantModel):
     package = models.ForeignKey(
         ServicePackage, on_delete=models.CASCADE, related_name="items"
     )
-    service = models.ForeignKey("billing.ServiceCatalog", on_delete=models.CASCADE)
+    service = models.ForeignKey(
+        "billing.ServiceCatalog", on_delete=models.CASCADE
+    )   # noqa: E501
     quantity = models.IntegerField(default=1)
     override_price_cents = models.BigIntegerField(null=True, blank=True)
 
@@ -271,7 +290,10 @@ class PricingTier(TenantModel):
     name = models.CharField(max_length=255)
     tier_type = models.CharField(
         max_length=10,
-        choices=[("B2B", "Business to Business"), ("B2C", "Business to Consumer")],
+        choices=[
+            ("B2B", "Business to Business"),
+            ("B2C", "Business to Consumer"),
+        ],
     )
     discount_percentage = models.DecimalField(
         max_digits=5, decimal_places=2, default=0.00
@@ -292,7 +314,9 @@ class PricingTier(TenantModel):
 class LedgerEntry(TenantModel):
     """Double-entry bookkeeping ledger entries"""
 
-    entry_id = models.UUIDField(default=uuid.uuid4, unique=True, editable=False)
+    entry_id = models.UUIDField(
+        default=uuid.uuid4, unique=True, editable=False
+    )   # noqa: E501
     transaction_date = models.DateField()
     reference_number = models.CharField(max_length=100)
     description = models.CharField(max_length=255)
@@ -300,11 +324,15 @@ class LedgerEntry(TenantModel):
         ChartOfAccounts, on_delete=models.CASCADE, related_name="debit_entries"
     )
     credit_account = models.ForeignKey(
-        ChartOfAccounts, on_delete=models.CASCADE, related_name="credit_entries"
+        ChartOfAccounts,
+        on_delete=models.CASCADE,
+        related_name="credit_entries",
     )
     amount_cents = models.BigIntegerField()
     currency = models.ForeignKey(Currency, on_delete=models.CASCADE)
-    exchange_rate = models.DecimalField(max_digits=10, decimal_places=4, default=1.0000)
+    exchange_rate = models.DecimalField(
+        max_digits=10, decimal_places=4, default=1.0000
+    )   # noqa: E501
 
     # References to source transactions
     invoice = models.ForeignKey(
@@ -375,7 +403,9 @@ class AccountingInvoice(TenantModel):
     customer = models.ForeignKey(
         Customer, on_delete=models.CASCADE, null=True, blank=True
     )
-    vendor = models.ForeignKey(Vendor, on_delete=models.CASCADE, null=True, blank=True)
+    vendor = models.ForeignKey(
+        Vendor, on_delete=models.CASCADE, null=True, blank=True
+    )   # noqa: E501
 
     # Financial details
     currency = models.ForeignKey(Currency, on_delete=models.CASCADE)
@@ -395,7 +425,9 @@ class AccountingInvoice(TenantModel):
     )
 
     # Status and control
-    status = models.CharField(max_length=20, choices=INVOICE_STATUS, default="DRAFT")
+    status = models.CharField(
+        max_length=20, choices=INVOICE_STATUS, default="DRAFT"
+    )   # noqa: E501
     terms_and_conditions = models.TextField(blank=True)
     notes = models.TextField(blank=True)
 
@@ -477,7 +509,9 @@ class AccountingInvoice(TenantModel):
         # Persist fields (subtotal/tax/total only if items exist)
         update_fields = ["balance_cents", "status"]
         if items.exists():
-            update_fields.extend(["subtotal_cents", "tax_cents", "total_cents"])
+            update_fields.extend(
+                ["subtotal_cents", "tax_cents", "total_cents"]
+            )   # noqa: E501
         self.save(update_fields=update_fields)
 
 
@@ -488,7 +522,10 @@ class InvoiceLineItem(TenantModel):
         AccountingInvoice, on_delete=models.CASCADE, related_name="items"
     )
     service = models.ForeignKey(
-        "billing.ServiceCatalog", on_delete=models.SET_NULL, null=True, blank=True
+        "billing.ServiceCatalog",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
     )
     package = models.ForeignKey(
         ServicePackage, on_delete=models.SET_NULL, null=True, blank=True
@@ -497,7 +534,9 @@ class InvoiceLineItem(TenantModel):
     description = models.CharField(max_length=255)
     quantity = models.DecimalField(max_digits=10, decimal_places=2, default=1)
     unit_price_cents = models.BigIntegerField()
-    cost_price_cents = models.BigIntegerField(default=0)  # For profitability analysis
+    cost_price_cents = models.BigIntegerField(
+        default=0
+    )  # For profitability analysis      # noqa: E501
 
     subtotal_cents = models.BigIntegerField()  # quantity * unit_price
     discount_percentage = models.DecimalField(
@@ -508,11 +547,17 @@ class InvoiceLineItem(TenantModel):
 
     # Tax breakdown
     tax_cents = models.BigIntegerField(default=0)
-    cgst_rate = models.DecimalField(max_digits=5, decimal_places=2, default=0.00)
+    cgst_rate = models.DecimalField(
+        max_digits=5, decimal_places=2, default=0.00
+    )   # noqa: E501
     cgst_cents = models.BigIntegerField(default=0)
-    sgst_rate = models.DecimalField(max_digits=5, decimal_places=2, default=0.00)
+    sgst_rate = models.DecimalField(
+        max_digits=5, decimal_places=2, default=0.00
+    )   # noqa: E501
     sgst_cents = models.BigIntegerField(default=0)
-    igst_rate = models.DecimalField(max_digits=5, decimal_places=2, default=0.00)
+    igst_rate = models.DecimalField(
+        max_digits=5, decimal_places=2, default=0.00
+    )   # noqa: E501
     igst_cents = models.BigIntegerField(default=0)
 
     total_cents = models.BigIntegerField()  # taxable + tax
@@ -532,7 +577,9 @@ class InvoiceLineItem(TenantModel):
     def calculate_amounts(self):
         """Calculate all amounts for this line item"""
         self.subtotal_cents = int(self.quantity * self.unit_price_cents)
-        self.discount_cents = int(self.subtotal_cents * self.discount_percentage / 100)
+        self.discount_cents = int(
+            self.subtotal_cents * self.discount_percentage / 100
+        )   # noqa: E501
         self.taxable_cents = self.subtotal_cents - self.discount_cents
 
         # Calculate taxes
@@ -576,7 +623,9 @@ class AccountingPayment(TenantModel):
 
     amount_cents = models.BigIntegerField()
     currency = models.ForeignKey(Currency, on_delete=models.CASCADE)
-    exchange_rate = models.DecimalField(max_digits=10, decimal_places=4, default=1.0000)
+    exchange_rate = models.DecimalField(
+        max_digits=10, decimal_places=4, default=1.0000
+    )   # noqa: E501
 
     payment_method = models.CharField(max_length=32, choices=PAYMENT_METHODS)
     reference_number = models.CharField(max_length=100, blank=True)
@@ -586,9 +635,13 @@ class AccountingPayment(TenantModel):
 
     # TDS if applicable
     tds_cents = models.BigIntegerField(default=0)
-    tds_rate = models.DecimalField(max_digits=5, decimal_places=2, default=0.00)
+    tds_rate = models.DecimalField(
+        max_digits=5, decimal_places=2, default=0.00
+    )   # noqa: E501
 
-    status = models.CharField(max_length=20, choices=PAYMENT_STATUS, default="PENDING")
+    status = models.CharField(
+        max_length=20, choices=PAYMENT_STATUS, default="PENDING"
+    )   # noqa: E501
     notes = models.TextField(blank=True)
 
     received_by = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -602,7 +655,8 @@ class AccountingPayment(TenantModel):
         super().save(*args, **kwargs)
         # Recompute paid amount from all payments
         self.invoice.paid_cents = (
-            self.invoice.payments.aggregate(total=Sum("amount_cents"))["total"] or 0
+            self.invoice.payments.aggregate(total=Sum("amount_cents"))["total"]
+            or 0   # noqa: E501
         )
         # Persist the paid amount, then recalc totals/balance/status
         self.invoice.save(update_fields=["paid_cents"])
@@ -689,7 +743,9 @@ class Expense(TenantModel):
     def save(self, *args, **kwargs):
         if not self.expense_number:
             self.generate_expense_number()
-        self.net_amount_cents = self.amount_cents + self.tax_cents - self.tds_cents
+        self.net_amount_cents = (
+            self.amount_cents + self.tax_cents - self.tds_cents
+        )   # noqa: E501
         super().save(*args, **kwargs)
 
     def generate_expense_number(self):
@@ -748,10 +804,16 @@ class BankAccount(TenantModel):
     def update_balance(self):
         """Update current balance based on transactions"""
         total_credits = (
-            self.credit_transactions.aggregate(total=Sum("amount_cents"))["total"] or 0
+            self.credit_transactions.aggregate(total=Sum("amount_cents"))[
+                "total"
+            ]   # noqa: E501
+            or 0   # noqa: E501
         )
         total_debits = (
-            self.debit_transactions.aggregate(total=Sum("amount_cents"))["total"] or 0
+            self.debit_transactions.aggregate(total=Sum("amount_cents"))[
+                "total"
+            ]   # noqa: E501
+            or 0   # noqa: E501
         )
 
         self.current_balance_cents = (
@@ -772,7 +834,9 @@ class BankTransaction(TenantModel):
         BankAccount, on_delete=models.CASCADE, related_name="transactions"
     )
     transaction_date = models.DateField()
-    transaction_type = models.CharField(max_length=10, choices=TRANSACTION_TYPES)
+    transaction_type = models.CharField(
+        max_length=10, choices=TRANSACTION_TYPES
+    )   # noqa: E501
     amount_cents = models.BigIntegerField()
     description = models.CharField(max_length=255)
     reference_number = models.CharField(max_length=100, blank=True)
@@ -831,7 +895,9 @@ class FixedAsset(TenantModel):
     # Purchase details
     purchase_date = models.DateField()
     purchase_cost_cents = models.BigIntegerField()
-    vendor = models.ForeignKey(Vendor, on_delete=models.SET_NULL, null=True, blank=True)
+    vendor = models.ForeignKey(
+        Vendor, on_delete=models.SET_NULL, null=True, blank=True
+    )   # noqa: E501
     invoice_reference = models.CharField(max_length=100, blank=True)
 
     # Depreciation
@@ -885,7 +951,9 @@ class DepreciationSchedule(TenantModel):
     """Depreciation schedule entries"""
 
     asset = models.ForeignKey(
-        FixedAsset, on_delete=models.CASCADE, related_name="depreciation_entries"
+        FixedAsset,
+        on_delete=models.CASCADE,
+        related_name="depreciation_entries",
     )
     depreciation_date = models.DateField()
     depreciation_amount_cents = models.BigIntegerField()
@@ -927,16 +995,22 @@ class PayrollEntry(TenantModel):
     other_allowances_cents = models.BigIntegerField(default=0)
 
     # Overtime and bonuses
-    overtime_hours = models.DecimalField(max_digits=6, decimal_places=2, default=0)
+    overtime_hours = models.DecimalField(
+        max_digits=6, decimal_places=2, default=0
+    )   # noqa: E501
     overtime_rate_cents = models.BigIntegerField(default=0)
     bonus_cents = models.BigIntegerField(default=0)
     incentive_cents = models.BigIntegerField(default=0)
 
     # Deductions
     pf_employee_cents = models.BigIntegerField(default=0)
-    pf_employer_cents = models.BigIntegerField(default=0)  # This goes to expenses
+    pf_employer_cents = models.BigIntegerField(
+        default=0
+    )  # This goes to expenses      # noqa: E501
     esi_employee_cents = models.BigIntegerField(default=0)
-    esi_employer_cents = models.BigIntegerField(default=0)  # This goes to expenses
+    esi_employer_cents = models.BigIntegerField(
+        default=0
+    )  # This goes to expenses      # noqa: E501
     professional_tax_cents = models.BigIntegerField(default=0)
     tds_cents = models.BigIntegerField(default=0)
     advance_deduction_cents = models.BigIntegerField(default=0)
@@ -946,9 +1020,13 @@ class PayrollEntry(TenantModel):
     gross_salary_cents = models.BigIntegerField()
     total_deductions_cents = models.BigIntegerField()
     net_salary_cents = models.BigIntegerField()
-    employer_cost_cents = models.BigIntegerField()  # Includes employer contributions
+    employer_cost_cents = (
+        models.BigIntegerField()
+    )  # Includes employer contributions      # noqa: E501
 
-    status = models.CharField(max_length=20, choices=PAYROLL_STATUS, default="DRAFT")
+    status = models.CharField(
+        max_length=20, choices=PAYROLL_STATUS, default="DRAFT"
+    )   # noqa: E501
     cost_center = models.ForeignKey(CostCenter, on_delete=models.CASCADE)
 
     created_by = models.ForeignKey(
@@ -995,11 +1073,15 @@ class PayrollEntry(TenantModel):
         )
 
         # Calculate net salary
-        self.net_salary_cents = self.gross_salary_cents - self.total_deductions_cents
+        self.net_salary_cents = (
+            self.gross_salary_cents - self.total_deductions_cents
+        )   # noqa: E501
 
         # Calculate employer cost (includes employer contributions)
         self.employer_cost_cents = (
-            self.gross_salary_cents + self.pf_employer_cents + self.esi_employer_cents
+            self.gross_salary_cents
+            + self.pf_employer_cents
+            + self.esi_employer_cents   # noqa: E501
         )
 
 
@@ -1029,7 +1111,9 @@ class InsuranceClaim(TenantModel):
     approval_date = models.DateField(null=True, blank=True)
     payment_date = models.DateField(null=True, blank=True)
 
-    status = models.CharField(max_length=32, choices=CLAIM_STATUS, default="DRAFT")
+    status = models.CharField(
+        max_length=32, choices=CLAIM_STATUS, default="DRAFT"
+    )   # noqa: E501
     rejection_reason = models.TextField(blank=True)
 
     # Reference numbers
@@ -1089,7 +1173,9 @@ class TDSEntry(TenantModel):
     section = models.CharField(max_length=10, choices=TDS_SECTIONS)
 
     # Deductee details
-    vendor = models.ForeignKey(Vendor, on_delete=models.CASCADE, null=True, blank=True)
+    vendor = models.ForeignKey(
+        Vendor, on_delete=models.CASCADE, null=True, blank=True
+    )   # noqa: E501
     employee = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
@@ -1209,7 +1295,9 @@ class VendorPayout(TenantModel):
 
     # Services provided
     total_services_cents = models.BigIntegerField()
-    commission_rate = models.DecimalField(max_digits=5, decimal_places=2, default=0.00)
+    commission_rate = models.DecimalField(
+        max_digits=5, decimal_places=2, default=0.00
+    )   # noqa: E501
     commission_cents = models.BigIntegerField(default=0)
 
     # Amounts
@@ -1218,7 +1306,9 @@ class VendorPayout(TenantModel):
     other_deductions_cents = models.BigIntegerField(default=0)
     net_payout_cents = models.BigIntegerField()
 
-    status = models.CharField(max_length=20, choices=PAYOUT_STATUS, default="PENDING")
+    status = models.CharField(
+        max_length=20, choices=PAYOUT_STATUS, default="PENDING"
+    )   # noqa: E501
     payment_reference = models.CharField(max_length=100, blank=True)
 
     created_by = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -1233,9 +1323,13 @@ class VendorPayout(TenantModel):
         self.commission_cents = int(
             self.total_services_cents * self.commission_rate / 100
         )
-        self.gross_payout_cents = self.total_services_cents - self.commission_cents
+        self.gross_payout_cents = (
+            self.total_services_cents - self.commission_cents
+        )   # noqa: E501
         self.net_payout_cents = (
-            self.gross_payout_cents - self.tds_cents - self.other_deductions_cents
+            self.gross_payout_cents
+            - self.tds_cents
+            - self.other_deductions_cents   # noqa: E501
         )
 
         super().save(*args, **kwargs)
@@ -1270,7 +1364,9 @@ class VendorPayoutItem(TenantModel):
     payout = models.ForeignKey(
         VendorPayout, on_delete=models.CASCADE, related_name="items"
     )
-    invoice_line_item = models.ForeignKey(InvoiceLineItem, on_delete=models.CASCADE)
+    invoice_line_item = models.ForeignKey(
+        InvoiceLineItem, on_delete=models.CASCADE
+    )   # noqa: E501
     service_date = models.DateField()
     amount_cents = models.BigIntegerField()
     patient = models.ForeignKey("patients.Patient", on_delete=models.CASCADE)
@@ -1286,7 +1382,9 @@ class RecurringInvoice(TenantModel):
         ("YEARLY", "Yearly"),
     ]
 
-    template_invoice = models.ForeignKey(AccountingInvoice, on_delete=models.CASCADE)
+    template_invoice = models.ForeignKey(
+        AccountingInvoice, on_delete=models.CASCADE
+    )   # noqa: E501
     frequency = models.CharField(max_length=20, choices=FREQUENCY_CHOICES)
     start_date = models.DateField()
     end_date = models.DateField(null=True, blank=True)
@@ -1321,7 +1419,12 @@ class TaxLiability(TenantModel):
     acknowledgment_number = models.CharField(max_length=100, blank=True)
 
     class Meta:
-        unique_together = ("hospital", "period_start", "period_end", "tax_type")
+        unique_together = (
+            "hospital",
+            "period_start",
+            "period_end",
+            "tax_type",
+        )
         ordering = ["-period_start"]
 
 
@@ -1421,7 +1524,9 @@ class Budget(TenantModel):
 
     def calculate_variance(self):
         """Calculate budget variance"""
-        self.variance_cents = self.actual_amount_cents - self.budgeted_amount_cents
+        self.variance_cents = (
+            self.actual_amount_cents - self.budgeted_amount_cents
+        )   # noqa: E501
         if self.budgeted_amount_cents != 0:
             self.variance_percentage = (
                 self.variance_cents / self.budgeted_amount_cents
@@ -1438,7 +1543,9 @@ class ProviderCommissionStructure(TenantModel):
     """Commission structure for outsourced providers"""
 
     vendor = models.ForeignKey(Vendor, on_delete=models.CASCADE)
-    service = models.ForeignKey("billing.ServiceCatalog", on_delete=models.CASCADE)
+    service = models.ForeignKey(
+        "billing.ServiceCatalog", on_delete=models.CASCADE
+    )   # noqa: E501
     commission_type = models.CharField(
         max_length=20,
         choices=[
@@ -1447,7 +1554,9 @@ class ProviderCommissionStructure(TenantModel):
             ("TIER", "Tier Based"),
         ],
     )
-    commission_rate = models.DecimalField(max_digits=5, decimal_places=2, default=0.00)
+    commission_rate = models.DecimalField(
+        max_digits=5, decimal_places=2, default=0.00
+    )   # noqa: E501
     fixed_amount_cents = models.BigIntegerField(default=0)
     effective_from = models.DateField()
     effective_to = models.DateField(null=True, blank=True)
@@ -1482,7 +1591,9 @@ class ReportSchedule(TenantModel):
     report_name = models.CharField(max_length=255)
     report_type = models.CharField(max_length=32, choices=REPORT_TYPES)
     frequency = models.CharField(max_length=20, choices=FREQUENCY_CHOICES)
-    recipients = models.TextField(help_text="Email addresses separated by commas")
+    recipients = models.TextField(
+        help_text="Email addresses separated by commas"
+    )   # noqa: E501
     last_generated = models.DateTimeField(null=True, blank=True)
     next_generation = models.DateTimeField()
     is_active = models.BooleanField(default=True)
@@ -1509,7 +1620,9 @@ class AccountingAuditLog(TenantModel):
         ("RECONCILE", "Reconcile"),
     ]
 
-    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
+    user = models.ForeignKey(
+        User, on_delete=models.CASCADE, null=True, blank=True
+    )   # noqa: E501
     action_type = models.CharField(max_length=20, choices=ACTION_TYPES)
     table_name = models.CharField(max_length=100)
     record_id = models.CharField(max_length=100)

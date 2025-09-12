@@ -34,7 +34,10 @@ class Migration(migrations.Migration):
                 ),
                 ("created_at", models.DateTimeField(auto_now_add=True)),
                 ("updated_at", models.DateTimeField(auto_now=True)),
-                ("invoice_number", models.CharField(max_length=50, unique=True)),
+                (
+                    "invoice_number",
+                    models.CharField(max_length=50, unique=True),
+                ),
                 (
                     "invoice_type",
                     models.CharField(
@@ -74,15 +77,21 @@ class Migration(migrations.Migration):
                 ("notes", models.TextField(blank=True)),
                 (
                     "insurance_percentage",
-                    models.DecimalField(decimal_places=2, default=0.0, max_digits=5),
+                    models.DecimalField(
+                        decimal_places=2, default=0.0, max_digits=5
+                    ),
                 ),
                 (
                     "employer_percentage",
-                    models.DecimalField(decimal_places=2, default=0.0, max_digits=5),
+                    models.DecimalField(
+                        decimal_places=2, default=0.0, max_digits=5
+                    ),
                 ),
                 (
                     "patient_percentage",
-                    models.DecimalField(decimal_places=2, default=100.0, max_digits=5),
+                    models.DecimalField(
+                        decimal_places=2, default=100.0, max_digits=5
+                    ),
                 ),
                 (
                     "bill",
@@ -112,12 +121,17 @@ class Migration(migrations.Migration):
                 ),
                 ("created_at", models.DateTimeField(auto_now_add=True)),
                 ("updated_at", models.DateTimeField(auto_now=True)),
-                ("payment_number", models.CharField(max_length=50, unique=True)),
+                (
+                    "payment_number",
+                    models.CharField(max_length=50, unique=True),
+                ),
                 ("payment_date", models.DateField()),
                 ("amount_cents", models.BigIntegerField()),
                 (
                     "exchange_rate",
-                    models.DecimalField(decimal_places=4, default=1.0, max_digits=10),
+                    models.DecimalField(
+                        decimal_places=4, default=1.0, max_digits=10
+                    ),
                 ),
                 (
                     "payment_method",
@@ -130,18 +144,26 @@ class Migration(migrations.Migration):
                             ("BANK_TRANSFER", "Bank Transfer"),
                             ("CHEQUE", "Cheque"),
                             ("DD", "Demand Draft"),
-                            ("INSURANCE_DIRECT", "Insurance Direct Settlement"),
+                            (
+                                "INSURANCE_DIRECT",
+                                "Insurance Direct Settlement",
+                            ),
                             ("CORPORATE_CREDIT", "Corporate Credit"),
                             ("ADJUSTMENT", "Adjustment"),
                         ],
                         max_length=32,
                     ),
                 ),
-                ("reference_number", models.CharField(blank=True, max_length=100)),
+                (
+                    "reference_number",
+                    models.CharField(blank=True, max_length=100),
+                ),
                 ("tds_cents", models.BigIntegerField(default=0)),
                 (
                     "tds_rate",
-                    models.DecimalField(decimal_places=2, default=0.0, max_digits=5),
+                    models.DecimalField(
+                        decimal_places=2, default=0.0, max_digits=5
+                    ),
                 ),
                 (
                     "status",
@@ -217,7 +239,8 @@ class Migration(migrations.Migration):
                 (
                     "account_code",
                     models.CharField(
-                        help_text="Unique account code (e.g., 1001)", max_length=20
+                        help_text="Unique account code (e.g., 1001)",
+                        max_length=20,
                     ),
                 ),
                 ("account_name", models.CharField(max_length=255)),
@@ -247,7 +270,10 @@ class Migration(migrations.Migration):
                             ("OPERATING_INCOME", "Operating Income"),
                             ("NON_OPERATING_INCOME", "Non-Operating Income"),
                             ("OPERATING_EXPENSES", "Operating Expenses"),
-                            ("ADMINISTRATIVE_EXPENSES", "Administrative Expenses"),
+                            (
+                                "ADMINISTRATIVE_EXPENSES",
+                                "Administrative Expenses",
+                            ),
                             ("FINANCIAL_EXPENSES", "Financial Expenses"),
                         ],
                         max_length=32,
@@ -346,7 +372,9 @@ class Migration(migrations.Migration):
                 ("symbol", models.CharField(default="₹", max_length=10)),
                 (
                     "exchange_rate",
-                    models.DecimalField(decimal_places=4, default=1.0, max_digits=10),
+                    models.DecimalField(
+                        decimal_places=4, default=1.0, max_digits=10
+                    ),
                 ),
                 ("is_base_currency", models.BooleanField(default=False)),
                 ("is_active", models.BooleanField(default=True)),
@@ -393,7 +421,10 @@ class Migration(migrations.Migration):
                         max_length=32,
                     ),
                 ),
-                ("contact_person", models.CharField(blank=True, max_length=255)),
+                (
+                    "contact_person",
+                    models.CharField(blank=True, max_length=255),
+                ),
                 ("email", models.EmailField(blank=True, max_length=254)),
                 ("phone", models.CharField(blank=True, max_length=20)),
                 ("address", models.TextField(blank=True)),
@@ -429,7 +460,10 @@ class Migration(migrations.Migration):
                 ),
                 ("created_at", models.DateTimeField(auto_now_add=True)),
                 ("updated_at", models.DateTimeField(auto_now=True)),
-                ("expense_number", models.CharField(max_length=50, unique=True)),
+                (
+                    "expense_number",
+                    models.CharField(max_length=50, unique=True),
+                ),
                 ("expense_date", models.DateField()),
                 (
                     "category",
@@ -456,8 +490,14 @@ class Migration(migrations.Migration):
                 ("tax_cents", models.BigIntegerField(default=0)),
                 ("tds_cents", models.BigIntegerField(default=0)),
                 ("net_amount_cents", models.BigIntegerField()),
-                ("invoice_number", models.CharField(blank=True, max_length=100)),
-                ("purchase_order_number", models.CharField(blank=True, max_length=100)),
+                (
+                    "invoice_number",
+                    models.CharField(blank=True, max_length=100),
+                ),
+                (
+                    "purchase_order_number",
+                    models.CharField(blank=True, max_length=100),
+                ),
                 ("is_approved", models.BooleanField(default=False)),
                 ("is_paid", models.BooleanField(default=False)),
                 ("payment_date", models.DateField(blank=True, null=True)),
@@ -522,31 +562,41 @@ class Migration(migrations.Migration):
                 ("description", models.CharField(max_length=255)),
                 (
                     "quantity",
-                    models.DecimalField(decimal_places=2, default=1, max_digits=10),
+                    models.DecimalField(
+                        decimal_places=2, default=1, max_digits=10
+                    ),
                 ),
                 ("unit_price_cents", models.BigIntegerField()),
                 ("cost_price_cents", models.BigIntegerField(default=0)),
                 ("subtotal_cents", models.BigIntegerField()),
                 (
                     "discount_percentage",
-                    models.DecimalField(decimal_places=2, default=0.0, max_digits=5),
+                    models.DecimalField(
+                        decimal_places=2, default=0.0, max_digits=5
+                    ),
                 ),
                 ("discount_cents", models.BigIntegerField(default=0)),
                 ("taxable_cents", models.BigIntegerField()),
                 ("tax_cents", models.BigIntegerField(default=0)),
                 (
                     "cgst_rate",
-                    models.DecimalField(decimal_places=2, default=0.0, max_digits=5),
+                    models.DecimalField(
+                        decimal_places=2, default=0.0, max_digits=5
+                    ),
                 ),
                 ("cgst_cents", models.BigIntegerField(default=0)),
                 (
                     "sgst_rate",
-                    models.DecimalField(decimal_places=2, default=0.0, max_digits=5),
+                    models.DecimalField(
+                        decimal_places=2, default=0.0, max_digits=5
+                    ),
                 ),
                 ("sgst_cents", models.BigIntegerField(default=0)),
                 (
                     "igst_rate",
-                    models.DecimalField(decimal_places=2, default=0.0, max_digits=5),
+                    models.DecimalField(
+                        decimal_places=2, default=0.0, max_digits=5
+                    ),
                 ),
                 ("igst_cents", models.BigIntegerField(default=0)),
                 ("total_cents", models.BigIntegerField()),
@@ -593,11 +643,16 @@ class Migration(migrations.Migration):
                 ("basic_salary_cents", models.BigIntegerField()),
                 ("hra_cents", models.BigIntegerField(default=0)),
                 ("medical_allowance_cents", models.BigIntegerField(default=0)),
-                ("transport_allowance_cents", models.BigIntegerField(default=0)),
+                (
+                    "transport_allowance_cents",
+                    models.BigIntegerField(default=0),
+                ),
                 ("other_allowances_cents", models.BigIntegerField(default=0)),
                 (
                     "overtime_hours",
-                    models.DecimalField(decimal_places=2, default=0, max_digits=6),
+                    models.DecimalField(
+                        decimal_places=2, default=0, max_digits=6
+                    ),
                 ),
                 ("overtime_rate_cents", models.BigIntegerField(default=0)),
                 ("bonus_cents", models.BigIntegerField(default=0)),
@@ -671,7 +726,9 @@ class Migration(migrations.Migration):
             ],
             options={
                 "ordering": ["-pay_date"],
-                "unique_together": {("employee", "pay_period_start", "pay_period_end")},
+                "unique_together": {
+                    ("employee", "pay_period_start", "pay_period_end")
+                },
             },
         ),
         migrations.CreateModel(
@@ -742,24 +799,33 @@ class Migration(migrations.Migration):
                 ("updated_at", models.DateTimeField(auto_now=True)),
                 ("vendor_code", models.CharField(max_length=50)),
                 ("name", models.CharField(max_length=255)),
-                ("contact_person", models.CharField(blank=True, max_length=255)),
+                (
+                    "contact_person",
+                    models.CharField(blank=True, max_length=255),
+                ),
                 ("email", models.EmailField(blank=True, max_length=254)),
                 ("phone", models.CharField(blank=True, max_length=20)),
                 ("address", models.TextField(blank=True)),
                 (
                     "gstin",
                     models.CharField(
-                        blank=True, help_text="GST Identification Number", max_length=15
+                        blank=True,
+                        help_text="GST Identification Number",
+                        max_length=15,
                     ),
                 ),
                 (
                     "pan",
-                    models.CharField(blank=True, help_text="PAN Number", max_length=10),
+                    models.CharField(
+                        blank=True, help_text="PAN Number", max_length=10
+                    ),
                 ),
                 ("tds_category", models.CharField(blank=True, max_length=50)),
                 (
                     "tds_rate",
-                    models.DecimalField(decimal_places=2, default=0.0, max_digits=5),
+                    models.DecimalField(
+                        decimal_places=2, default=0.0, max_digits=5
+                    ),
                 ),
                 ("payment_terms_days", models.IntegerField(default=30)),
                 ("is_active", models.BooleanField(default=True)),
@@ -791,12 +857,17 @@ class Migration(migrations.Migration):
                 ),
                 ("created_at", models.DateTimeField(auto_now_add=True)),
                 ("updated_at", models.DateTimeField(auto_now=True)),
-                ("payout_number", models.CharField(max_length=50, unique=True)),
+                (
+                    "payout_number",
+                    models.CharField(max_length=50, unique=True),
+                ),
                 ("payout_date", models.DateField()),
                 ("total_services_cents", models.BigIntegerField()),
                 (
                     "commission_rate",
-                    models.DecimalField(decimal_places=2, default=0.0, max_digits=5),
+                    models.DecimalField(
+                        decimal_places=2, default=0.0, max_digits=5
+                    ),
                 ),
                 ("commission_cents", models.BigIntegerField(default=0)),
                 ("gross_payout_cents", models.BigIntegerField()),
@@ -816,7 +887,10 @@ class Migration(migrations.Migration):
                         max_length=20,
                     ),
                 ),
-                ("payment_reference", models.CharField(blank=True, max_length=100)),
+                (
+                    "payment_reference",
+                    models.CharField(blank=True, max_length=100),
+                ),
                 (
                     "created_by",
                     models.ForeignKey(
@@ -909,13 +983,19 @@ class Migration(migrations.Migration):
                 ),
                 ("created_at", models.DateTimeField(auto_now_add=True)),
                 ("updated_at", models.DateTimeField(auto_now=True)),
-                ("tds_entry_number", models.CharField(max_length=50, unique=True)),
+                (
+                    "tds_entry_number",
+                    models.CharField(max_length=50, unique=True),
+                ),
                 ("deduction_date", models.DateField()),
                 (
                     "section",
                     models.CharField(
                         choices=[
-                            ("194A", "Interest other than on Securities - 194A"),
+                            (
+                                "194A",
+                                "Interest other than on Securities - 194A",
+                            ),
                             ("194C", "Payments to Contractors - 194C"),
                             ("194H", "Commission or Brokerage - 194H"),
                             ("194I", "Rent - 194I"),
@@ -927,9 +1007,15 @@ class Migration(migrations.Migration):
                     ),
                 ),
                 ("gross_amount_cents", models.BigIntegerField()),
-                ("tds_rate", models.DecimalField(decimal_places=2, max_digits=5)),
+                (
+                    "tds_rate",
+                    models.DecimalField(decimal_places=2, max_digits=5),
+                ),
                 ("tds_amount_cents", models.BigIntegerField()),
-                ("certificate_number", models.CharField(blank=True, max_length=100)),
+                (
+                    "certificate_number",
+                    models.CharField(blank=True, max_length=100),
+                ),
                 ("certificate_date", models.DateField(blank=True, null=True)),
                 (
                     "created_by",
@@ -1074,7 +1160,10 @@ class Migration(migrations.Migration):
                             ("GST_RETURN", "GST Return"),
                             ("TDS_RETURN", "TDS Return"),
                             ("PAYROLL_SUMMARY", "Payroll Summary"),
-                            ("ASSET_DEPRECIATION", "Asset Depreciation Report"),
+                            (
+                                "ASSET_DEPRECIATION",
+                                "Asset Depreciation Report",
+                            ),
                         ],
                         max_length=32,
                     ),
@@ -1093,9 +1182,14 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "recipients",
-                    models.TextField(help_text="Email addresses separated by commas"),
+                    models.TextField(
+                        help_text="Email addresses separated by commas"
+                    ),
                 ),
-                ("last_generated", models.DateTimeField(blank=True, null=True)),
+                (
+                    "last_generated",
+                    models.DateTimeField(blank=True, null=True),
+                ),
                 ("next_generation", models.DateTimeField()),
                 ("is_active", models.BooleanField(default=True)),
                 (
@@ -1147,7 +1241,10 @@ class Migration(migrations.Migration):
                 ("start_date", models.DateField()),
                 ("end_date", models.DateField(blank=True, null=True)),
                 ("next_billing_date", models.DateField()),
-                ("last_generated_date", models.DateField(blank=True, null=True)),
+                (
+                    "last_generated_date",
+                    models.DateField(blank=True, null=True),
+                ),
                 ("is_active", models.BooleanField(default=True)),
                 (
                     "created_by",
@@ -1245,9 +1342,18 @@ class Migration(migrations.Migration):
                     ),
                 ),
                 ("rejection_reason", models.TextField(blank=True)),
-                ("insurance_ref_number", models.CharField(blank=True, max_length=100)),
-                ("policy_number", models.CharField(blank=True, max_length=100)),
-                ("authorization_number", models.CharField(blank=True, max_length=100)),
+                (
+                    "insurance_ref_number",
+                    models.CharField(blank=True, max_length=100),
+                ),
+                (
+                    "policy_number",
+                    models.CharField(blank=True, max_length=100),
+                ),
+                (
+                    "authorization_number",
+                    models.CharField(blank=True, max_length=100),
+                ),
                 (
                     "created_by",
                     models.ForeignKey(
@@ -1381,7 +1487,10 @@ class Migration(migrations.Migration):
                 ),
                 ("purchase_date", models.DateField()),
                 ("purchase_cost_cents", models.BigIntegerField()),
-                ("invoice_reference", models.CharField(blank=True, max_length=100)),
+                (
+                    "invoice_reference",
+                    models.CharField(blank=True, max_length=100),
+                ),
                 (
                     "depreciation_method",
                     models.CharField(
@@ -1403,13 +1512,19 @@ class Migration(migrations.Migration):
                     ),
                 ),
                 ("current_book_value_cents", models.BigIntegerField()),
-                ("accumulated_depreciation_cents", models.BigIntegerField(default=0)),
+                (
+                    "accumulated_depreciation_cents",
+                    models.BigIntegerField(default=0),
+                ),
                 ("disposal_date", models.DateField(blank=True, null=True)),
                 (
                     "disposal_amount_cents",
                     models.BigIntegerField(blank=True, null=True),
                 ),
-                ("disposal_method", models.CharField(blank=True, max_length=100)),
+                (
+                    "disposal_method",
+                    models.CharField(blank=True, max_length=100),
+                ),
                 ("is_active", models.BooleanField(default=True)),
                 (
                     "cost_center",
@@ -1455,7 +1570,10 @@ class Migration(migrations.Migration):
                 ),
                 ("created_at", models.DateTimeField(auto_now_add=True)),
                 ("updated_at", models.DateTimeField(auto_now=True)),
-                ("name", models.CharField(help_text="e.g., 2024-25", max_length=20)),
+                (
+                    "name",
+                    models.CharField(help_text="e.g., 2024-25", max_length=20),
+                ),
                 ("start_date", models.DateField()),
                 ("end_date", models.DateField()),
                 ("is_current", models.BooleanField(default=False)),
@@ -1529,7 +1647,8 @@ class Migration(migrations.Migration):
             model_name="expense",
             name="vendor",
             field=models.ForeignKey(
-                on_delete=django.db.models.deletion.CASCADE, to="accounting.vendor"
+                on_delete=django.db.models.deletion.CASCADE,
+                to="accounting.vendor",
             ),
         ),
         migrations.CreateModel(
@@ -1556,7 +1675,10 @@ class Migration(migrations.Migration):
                 ),
                 ("amount_cents", models.BigIntegerField()),
                 ("description", models.CharField(max_length=255)),
-                ("reference_number", models.CharField(blank=True, max_length=100)),
+                (
+                    "reference_number",
+                    models.CharField(blank=True, max_length=100),
+                ),
                 ("is_reconciled", models.BooleanField(default=False)),
                 ("reconciled_at", models.DateTimeField(blank=True, null=True)),
                 (
@@ -1611,7 +1733,8 @@ class Migration(migrations.Migration):
             model_name="bankaccount",
             name="currency",
             field=models.ForeignKey(
-                on_delete=django.db.models.deletion.CASCADE, to="accounting.currency"
+                on_delete=django.db.models.deletion.CASCADE,
+                to="accounting.currency",
             ),
         ),
         migrations.AddField(
@@ -1637,7 +1760,8 @@ class Migration(migrations.Migration):
             model_name="accountingpayment",
             name="currency",
             field=models.ForeignKey(
-                on_delete=django.db.models.deletion.CASCADE, to="accounting.currency"
+                on_delete=django.db.models.deletion.CASCADE,
+                to="accounting.currency",
             ),
         ),
         migrations.AddField(
@@ -1662,7 +1786,8 @@ class Migration(migrations.Migration):
             model_name="accountingpayment",
             name="received_by",
             field=models.ForeignKey(
-                on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL
+                on_delete=django.db.models.deletion.CASCADE,
+                to=settings.AUTH_USER_MODEL,
             ),
         ),
         migrations.AddField(
@@ -1679,14 +1804,16 @@ class Migration(migrations.Migration):
             model_name="accountinginvoice",
             name="created_by",
             field=models.ForeignKey(
-                on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL
+                on_delete=django.db.models.deletion.CASCADE,
+                to=settings.AUTH_USER_MODEL,
             ),
         ),
         migrations.AddField(
             model_name="accountinginvoice",
             name="currency",
             field=models.ForeignKey(
-                on_delete=django.db.models.deletion.CASCADE, to="accounting.currency"
+                on_delete=django.db.models.deletion.CASCADE,
+                to="accounting.currency",
             ),
         ),
         migrations.AddField(
@@ -1761,7 +1888,10 @@ class Migration(migrations.Migration):
                 ("record_id", models.CharField(max_length=100)),
                 ("old_values", models.JSONField(blank=True, default=dict)),
                 ("new_values", models.JSONField(blank=True, default=dict)),
-                ("ip_address", models.GenericIPAddressField(blank=True, null=True)),
+                (
+                    "ip_address",
+                    models.GenericIPAddressField(blank=True, null=True),
+                ),
                 ("user_agent", models.TextField(blank=True)),
                 ("timestamp", models.DateTimeField(auto_now_add=True)),
                 (
@@ -1824,7 +1954,10 @@ class Migration(migrations.Migration):
                 ("net_tax_liability_cents", models.BigIntegerField(default=0)),
                 ("return_filed", models.BooleanField(default=False)),
                 ("filing_date", models.DateField(blank=True, null=True)),
-                ("acknowledgment_number", models.CharField(blank=True, max_length=100)),
+                (
+                    "acknowledgment_number",
+                    models.CharField(blank=True, max_length=100),
+                ),
                 (
                     "hospital",
                     models.ForeignKey(
@@ -1856,7 +1989,10 @@ class Migration(migrations.Migration):
                 ("created_at", models.DateTimeField(auto_now_add=True)),
                 ("updated_at", models.DateTimeField(auto_now=True)),
                 ("quantity", models.IntegerField(default=1)),
-                ("override_price_cents", models.BigIntegerField(blank=True, null=True)),
+                (
+                    "override_price_cents",
+                    models.BigIntegerField(blank=True, null=True),
+                ),
                 (
                     "hospital",
                     models.ForeignKey(
@@ -1912,7 +2048,9 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "commission_rate",
-                    models.DecimalField(decimal_places=2, default=0.0, max_digits=5),
+                    models.DecimalField(
+                        decimal_places=2, default=0.0, max_digits=5
+                    ),
                 ),
                 ("fixed_amount_cents", models.BigIntegerField(default=0)),
                 ("effective_from", models.DateField()),
@@ -1973,11 +2111,15 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "discount_percentage",
-                    models.DecimalField(decimal_places=2, default=0.0, max_digits=5),
+                    models.DecimalField(
+                        decimal_places=2, default=0.0, max_digits=5
+                    ),
                 ),
                 (
                     "markup_percentage",
-                    models.DecimalField(decimal_places=2, default=0.0, max_digits=5),
+                    models.DecimalField(
+                        decimal_places=2, default=0.0, max_digits=5
+                    ),
                 ),
                 ("is_active", models.BooleanField(default=True)),
                 (
@@ -2010,7 +2152,9 @@ class Migration(migrations.Migration):
                 ("updated_at", models.DateTimeField(auto_now=True)),
                 (
                     "entry_id",
-                    models.UUIDField(default=uuid.uuid4, editable=False, unique=True),
+                    models.UUIDField(
+                        default=uuid.uuid4, editable=False, unique=True
+                    ),
                 ),
                 ("transaction_date", models.DateField()),
                 ("reference_number", models.CharField(max_length=100)),
@@ -2018,7 +2162,9 @@ class Migration(migrations.Migration):
                 ("amount_cents", models.BigIntegerField()),
                 (
                     "exchange_rate",
-                    models.DecimalField(decimal_places=4, default=1.0, max_digits=10),
+                    models.DecimalField(
+                        decimal_places=4, default=1.0, max_digits=10
+                    ),
                 ),
                 ("is_reversed", models.BooleanField(default=False)),
                 (
@@ -2214,7 +2360,9 @@ class Migration(migrations.Migration):
                 (
                     "document_file",
                     models.FileField(
-                        blank=True, null=True, upload_to="compliance_documents/"
+                        blank=True,
+                        null=True,
+                        upload_to="compliance_documents/",
                     ),
                 ),
                 ("is_active", models.BooleanField(default=True)),
@@ -2229,7 +2377,9 @@ class Migration(migrations.Migration):
             ],
             options={
                 "ordering": ["expiry_date"],
-                "unique_together": {("hospital", "document_type", "document_number")},
+                "unique_together": {
+                    ("hospital", "document_type", "document_number")
+                },
             },
         ),
         migrations.CreateModel(
@@ -2251,7 +2401,9 @@ class Migration(migrations.Migration):
                 ("variance_cents", models.BigIntegerField(default=0)),
                 (
                     "variance_percentage",
-                    models.DecimalField(decimal_places=2, default=0.0, max_digits=6),
+                    models.DecimalField(
+                        decimal_places=2, default=0.0, max_digits=6
+                    ),
                 ),
                 ("notes", models.TextField(blank=True)),
                 (
@@ -2293,7 +2445,9 @@ class Migration(migrations.Migration):
             ],
             options={
                 "ordering": ["cost_center", "account"],
-                "unique_together": {("financial_year", "cost_center", "account")},
+                "unique_together": {
+                    ("financial_year", "cost_center", "account")
+                },
             },
         ),
         migrations.CreateModel(
@@ -2404,7 +2558,9 @@ class Migration(migrations.Migration):
         ),
         migrations.AddIndex(
             model_name="accountinginvoice",
-            index=models.Index(fields=["status"], name="accounting__status_820aff_idx"),
+            index=models.Index(
+                fields=["status"], name="accounting__status_820aff_idx"
+            ),
         ),
         migrations.AddIndex(
             model_name="accountinginvoice",
@@ -2428,7 +2584,8 @@ class Migration(migrations.Migration):
         migrations.AddIndex(
             model_name="accountingauditlog",
             index=models.Index(
-                fields=["user", "timestamp"], name="accounting__user_id_fb12c4_idx"
+                fields=["user", "timestamp"],
+                name="accounting__user_id_fb12c4_idx",
             ),
         ),
     ]

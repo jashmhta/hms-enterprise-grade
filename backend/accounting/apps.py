@@ -7,4 +7,4 @@ class AccountingConfig(AppConfig):
     verbose_name = "Hospital Accounting System"
 
     def ready(self):
-        import accounting.signals  # Import signals when app is ready
+        import accounting.signals  # Import signals when app is ready  # noqa: F401, E501

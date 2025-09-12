@@ -18,7 +18,11 @@ class AccountingModulePermission(permissions.BasePermission):
 
         user_role = request.user.role
         action = view.action or "list"
-        view_name = getattr(view, "basename", "") or view.__class__.__name__.lower()
+        view_name = (
+            getattr(view, "basename", "") or view.__class__.__name__.lower()
+        )
+        # noqa: E501
+        # noqa: E501
 
         # Super Admin has full access to everything
         if user_role == UserRole.SUPER_ADMIN:
@@ -50,7 +54,12 @@ class AccountingModulePermission(permissions.BasePermission):
                     "expense",
                 ],
                 "allowed_actions": ["list", "retrieve"],
-                "department_restricted": True,  # Can only view their department data
+                "department_restricted": True,
+                # Can only view their department data
+                # noqa: E501
+                # noqa: E501
+                # noqa: E501
+                # noqa: E501
             },
             UserRole.NURSE: {
                 "allowed_views": ["dashboard"],
@@ -96,7 +105,12 @@ class AccountingModulePermission(permissions.BasePermission):
         """Object-level permissions"""
         user_role = request.user.role
 
-        # Super Admin and Hospital Admin have access to all objects in their hospital
+        # Super Admin and Hospital Admin have access to all objects
+        # in their hospital
+        # noqa: E501
+        # noqa: E501
+        # noqa: E501
+        # noqa: E501
         if user_role in [UserRole.SUPER_ADMIN, UserRole.HOSPITAL_ADMIN]:
             return obj.hospital == request.user.hospital
 
@@ -162,7 +176,12 @@ class ExpenseApprovalPermission(permissions.BasePermission):
         if user_role in [UserRole.SUPER_ADMIN, UserRole.HOSPITAL_ADMIN]:
             return True
 
-        # Department heads can approve expenses for their department up to a limit
+        # Department heads can approve expenses for their department
+        # up to a limit
+        # noqa: E501
+        # noqa: E501
+        # noqa: E501
+        # noqa: E501
         if user_role == UserRole.DOCTOR and view.action == "approve":
             # Add logic for approval limits based on user hierarchy
             return True
@@ -183,7 +202,12 @@ class PayrollProcessingPermission(permissions.BasePermission):
         if user_role in [UserRole.SUPER_ADMIN, UserRole.HOSPITAL_ADMIN]:
             return True
 
-        # Check if user has HR permissions (would need to be added to user model)
+        # Check if user has HR permissions (would need to be added
+        # to user model)
+        # noqa: E501
+        # noqa: E501
+        # noqa: E501
+        # noqa: E501
         if (
             hasattr(request.user, "has_hr_permissions")
             and request.user.has_hr_permissions
@@ -249,7 +273,12 @@ class BankReconciliationPermission(permissions.BasePermission):
 
         user_role = request.user.role
 
-        # Hospital Admin and designated finance staff can perform reconciliation
+        # Hospital Admin and designated finance staff can perform
+        # reconciliation
+        # noqa: E501
+        # noqa: E501
+        # noqa: E501
+        # noqa: E501
         if user_role in [UserRole.SUPER_ADMIN, UserRole.HOSPITAL_ADMIN]:
             return True
 
@@ -281,7 +310,11 @@ class AuditLogPermission(permissions.BasePermission):
             return True
 
         # Audit logs are read-only for authorized users
-        if request.method == "GET" and hasattr(request.user, "has_audit_access"):
+        if request.method == "GET" and hasattr(
+            request.user, "has_audit_access"
+        ):
+            # noqa: E501
+            # noqa: E501
             return request.user.has_audit_access
 
         return False
@@ -295,7 +328,10 @@ class AdvancedReportingPermission(permissions.BasePermission):
 
     def has_permission(self, request, view):
         # Advanced reports require management level access
-        return request.user.role in [UserRole.SUPER_ADMIN, UserRole.HOSPITAL_ADMIN]
+        return request.user.role in [
+            UserRole.SUPER_ADMIN,
+            UserRole.HOSPITAL_ADMIN,
+        ]
 
 
 class ComplianceManagementPermission(permissions.BasePermission):
@@ -303,7 +339,10 @@ class ComplianceManagementPermission(permissions.BasePermission):
 
     def has_permission(self, request, view):
         # Compliance management requires admin level access
-        return request.user.role in [UserRole.SUPER_ADMIN, UserRole.HOSPITAL_ADMIN]
+        return request.user.role in [
+            UserRole.SUPER_ADMIN,
+            UserRole.HOSPITAL_ADMIN,
+        ]
 
 
 class AssetManagementPermission(permissions.BasePermission):
