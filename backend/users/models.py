@@ -1,11 +1,12 @@
-import uuid
 from datetime import timedelta
 
-from django.contrib.auth.models import AbstractUser, Group, Permission
-from django.core.validators import RegexValidator
+from django.contrib.auth.models import AbstractUser, Permission
 from django.db import models
 from django.utils import timezone
-from encrypted_model_fields.fields import EncryptedCharField, EncryptedEmailField
+from encrypted_model_fields.fields import (
+    EncryptedCharField,
+    EncryptedEmailField,
+)
 
 
 class UserRole(models.TextChoices):
@@ -65,7 +66,9 @@ class Department(models.Model):
     code = models.CharField(max_length=20, unique=True)
     description = models.TextField(blank=True)
     hospital = models.ForeignKey(
-        "hospitals.Hospital", on_delete=models.CASCADE, related_name="departments"
+        "hospitals.Hospital",
+        on_delete=models.CASCADE,
+        related_name="departments",
     )
     head = models.ForeignKey(
         "User",
@@ -155,7 +158,9 @@ class User(AbstractUser):
 
     # Employment Information
     employment_type = models.CharField(
-        max_length=20, choices=EmploymentType.choices, default=EmploymentType.FULL_TIME
+        max_length=20,
+        choices=EmploymentType.choices,
+        default=EmploymentType.FULL_TIME,
     )
     hire_date = models.DateField(null=True, blank=True)
     termination_date = models.DateField(null=True, blank=True)
@@ -219,7 +224,12 @@ class User(AbstractUser):
         return f"{self.get_full_name()} ({self.employee_id or self.username})"
 
     def get_full_name(self):
-        parts = [self.first_name, self.middle_name, self.last_name, self.suffix]
+        parts = [
+            self.first_name,
+            self.middle_name,
+            self.last_name,
+            self.suffix,
+        ]
         return " ".join(part for part in parts if part)
 
     def is_account_locked(self):
@@ -252,7 +262,9 @@ class UserPermissionGroup(models.Model):
     name = models.CharField(max_length=100)
     description = models.TextField(blank=True)
     hospital = models.ForeignKey(
-        "hospitals.Hospital", on_delete=models.CASCADE, related_name="permission_groups"
+        "hospitals.Hospital",
+        on_delete=models.CASCADE,
+        related_name="permission_groups",
     )
     permissions = models.ManyToManyField(Permission, blank=True)
     users = models.ManyToManyField(

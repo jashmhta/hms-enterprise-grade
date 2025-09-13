@@ -7,7 +7,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("auth", "0012_alter_user_first_name_max_length"),
         ("hospitals", "0002_plan_hospitalplan"),
@@ -110,7 +109,10 @@ class Migration(migrations.Migration):
                 ("ip_address", models.GenericIPAddressField()),
                 ("user_agent", models.TextField()),
                 ("success", models.BooleanField()),
-                ("failure_reason", models.CharField(blank=True, max_length=100)),
+                (
+                    "failure_reason",
+                    models.CharField(blank=True, max_length=100),
+                ),
                 ("timestamp", models.DateTimeField(auto_now_add=True)),
                 ("location", models.CharField(blank=True, max_length=255)),
             ],
@@ -580,7 +582,8 @@ class Migration(migrations.Migration):
         migrations.AddIndex(
             model_name="usersession",
             index=models.Index(
-                fields=["user", "is_active"], name="users_users_user_id_3887fe_idx"
+                fields=["user", "is_active"],
+                name="users_users_user_id_3887fe_idx",
             ),
         ),
         migrations.AddIndex(
@@ -596,7 +599,8 @@ class Migration(migrations.Migration):
         migrations.AddIndex(
             model_name="userloginhistory",
             index=models.Index(
-                fields=["user", "timestamp"], name="users_userl_user_id_f72497_idx"
+                fields=["user", "timestamp"],
+                name="users_userl_user_id_f72497_idx",
             ),
         ),
         migrations.AddIndex(
@@ -609,13 +613,15 @@ class Migration(migrations.Migration):
         migrations.AddIndex(
             model_name="userloginhistory",
             index=models.Index(
-                fields=["success", "timestamp"], name="users_userl_success_bfc528_idx"
+                fields=["success", "timestamp"],
+                name="users_userl_success_bfc528_idx",
             ),
         ),
         migrations.AddIndex(
             model_name="usercredential",
             index=models.Index(
-                fields=["user", "is_active"], name="users_userc_user_id_1e0d9e_idx"
+                fields=["user", "is_active"],
+                name="users_userc_user_id_1e0d9e_idx",
             ),
         ),
         migrations.AddIndex(

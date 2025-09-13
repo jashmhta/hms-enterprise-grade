@@ -33,6 +33,11 @@ def log_action(instance, action, user=None):
     data = {}
     try:
         data = model_to_dict(instance)
+        from datetime import date, datetime
+
+        for key, value in data.items():
+            if isinstance(value, (date, datetime)):
+                data[key] = value.isoformat()
     except Exception:
         pass
     AuditLog.objects.create(

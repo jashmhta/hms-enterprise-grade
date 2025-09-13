@@ -11,7 +11,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         (
             "patients",
@@ -166,7 +165,10 @@ class Migration(migrations.Migration):
                         max_length=10,
                     ),
                 ),
-                ("notes", encrypted_model_fields.fields.EncryptedTextField(blank=True)),
+                (
+                    "notes",
+                    encrypted_model_fields.fields.EncryptedTextField(blank=True),
+                ),
                 ("created_at", models.DateTimeField(auto_now_add=True)),
                 ("updated_at", models.DateTimeField(auto_now=True)),
             ],
@@ -215,13 +217,15 @@ class Migration(migrations.Migration):
                 (
                     "objective",
                     encrypted_model_fields.fields.EncryptedTextField(
-                        blank=True, help_text="Objective findings and observations"
+                        blank=True,
+                        help_text="Objective findings and observations",
                     ),
                 ),
                 (
                     "assessment",
                     encrypted_model_fields.fields.EncryptedTextField(
-                        blank=True, help_text="Clinical assessment and diagnosis"
+                        blank=True,
+                        help_text="Clinical assessment and diagnosis",
                     ),
                 ),
                 (
@@ -278,7 +282,10 @@ class Migration(migrations.Migration):
                     ),
                 ),
                 ("title", models.CharField(max_length=200)),
-                ("description", encrypted_model_fields.fields.EncryptedTextField()),
+                (
+                    "description",
+                    encrypted_model_fields.fields.EncryptedTextField(),
+                ),
                 (
                     "instructions",
                     encrypted_model_fields.fields.EncryptedTextField(blank=True),
@@ -455,7 +462,10 @@ class Migration(migrations.Migration):
                         ],
                     ),
                 ),
-                ("pain_location", models.CharField(blank=True, max_length=200)),
+                (
+                    "pain_location",
+                    models.CharField(blank=True, max_length=200),
+                ),
                 (
                     "head_circumference_cm",
                     models.DecimalField(
@@ -750,19 +760,22 @@ class Migration(migrations.Migration):
         migrations.AddIndex(
             model_name="encounter",
             index=models.Index(
-                fields=["encounter_status"], name="ehr_encount_encount_5f083e_idx"
+                fields=["encounter_status"],
+                name="ehr_encount_encount_5f083e_idx",
             ),
         ),
         migrations.AddIndex(
             model_name="encounter",
             index=models.Index(
-                fields=["encounter_type"], name="ehr_encount_encount_da38e4_idx"
+                fields=["encounter_type"],
+                name="ehr_encount_encount_da38e4_idx",
             ),
         ),
         migrations.AddIndex(
             model_name="encounter",
             index=models.Index(
-                fields=["encounter_number"], name="ehr_encount_encount_08fe00_idx"
+                fields=["encounter_number"],
+                name="ehr_encount_encount_08fe00_idx",
             ),
         ),
         migrations.DeleteModel(
@@ -781,7 +794,8 @@ class Migration(migrations.Migration):
             model_name="vitalsigns",
             name="recorded_by",
             field=models.ForeignKey(
-                on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL
+                on_delete=django.db.models.deletion.CASCADE,
+                to=settings.AUTH_USER_MODEL,
             ),
         ),
         migrations.AddField(
@@ -797,7 +811,8 @@ class Migration(migrations.Migration):
             model_name="planofcare",
             name="ordered_by",
             field=models.ForeignKey(
-                on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL
+                on_delete=django.db.models.deletion.CASCADE,
+                to=settings.AUTH_USER_MODEL,
             ),
         ),
         migrations.AddField(
@@ -843,7 +858,8 @@ class Migration(migrations.Migration):
             model_name="assessment",
             name="diagnosed_by",
             field=models.ForeignKey(
-                on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL
+                on_delete=django.db.models.deletion.CASCADE,
+                to=settings.AUTH_USER_MODEL,
             ),
         ),
         migrations.AddField(
@@ -895,7 +911,8 @@ class Migration(migrations.Migration):
         migrations.AddIndex(
             model_name="planofcare",
             index=models.Index(
-                fields=["encounter", "status"], name="ehr_planofc_encount_68a339_idx"
+                fields=["encounter", "status"],
+                name="ehr_planofc_encount_68a339_idx",
             ),
         ),
         migrations.AddIndex(
@@ -933,13 +950,15 @@ class Migration(migrations.Migration):
         migrations.AddIndex(
             model_name="assessment",
             index=models.Index(
-                fields=["diagnosis_code"], name="ehr_assessm_diagnos_5b0ecd_idx"
+                fields=["diagnosis_code"],
+                name="ehr_assessm_diagnos_5b0ecd_idx",
             ),
         ),
         migrations.AddIndex(
             model_name="allergy",
             index=models.Index(
-                fields=["patient", "status"], name="ehr_allergy_patient_f9a71a_idx"
+                fields=["patient", "status"],
+                name="ehr_allergy_patient_f9a71a_idx",
             ),
         ),
         migrations.AddIndex(

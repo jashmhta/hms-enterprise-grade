@@ -1,10 +1,11 @@
 import uuid
 
-from core.models import TenantModel, TimeStampedModel
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 from django.utils import timezone
 from encrypted_model_fields.fields import EncryptedTextField
+
+from core.models import TenantModel, TimeStampedModel
 
 
 class EncounterType(models.TextChoices):
@@ -70,13 +71,18 @@ class Encounter(TenantModel):
         "users.User", blank=True, related_name="consulting_encounters"
     )
     appointment = models.OneToOneField(
-        "appointments.Appointment", on_delete=models.SET_NULL, null=True, blank=True
+        "appointments.Appointment",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
     )
 
     # Encounter Details
     encounter_number = models.CharField(max_length=50, db_index=True, default="TEMP")
     encounter_type = models.CharField(
-        max_length=20, choices=EncounterType.choices, default=EncounterType.OUTPATIENT
+        max_length=20,
+        choices=EncounterType.choices,
+        default=EncounterType.OUTPATIENT,
     )
     encounter_status = models.CharField(
         max_length=15,
@@ -155,7 +161,8 @@ class Encounter(TenantModel):
         ]
 
     def __str__(self) -> str:
-        return f"{self.patient} - {self.encounter_type} on {self.scheduled_start.date() if self.scheduled_start else 'TBD'}"
+        date_str = self.scheduled_start.date() if self.scheduled_start else "TBD"
+        return f"{self.patient} - {self.encounter_type} on {date_str}"
 
     def save(self, *args, **kwargs):
         if not self.encounter_number:

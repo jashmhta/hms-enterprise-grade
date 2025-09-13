@@ -12,6 +12,7 @@ from rest_framework import permissions, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.views import APIView
+
 from users.models import UserRole
 
 from .models import (
@@ -86,9 +87,7 @@ class HospitalFilterMixin:
     """Mixin to filter objects by hospital"""
 
     def get_queryset(self):
-        return (
-            super().get_queryset().filter(hospital=self.request.user.hospital)
-        )
+        return super().get_queryset().filter(hospital=self.request.user.hospital)
 
     # noqa: E501
 
@@ -119,10 +118,7 @@ class AccountingPermission(permissions.BasePermission):
 
         # Doctors can view reports related to their department
         if request.user.role == UserRole.DOCTOR:
-            return (
-                view.action in ["list", "retrieve"]
-                and "report" in view.basename
-            )
+            return view.action in ["list", "retrieve"] and "report" in view.basename
         # noqa: E501
         # noqa: E501
 
@@ -438,8 +434,7 @@ class PayrollEntryViewSet(HospitalFilterMixin, viewsets.ModelViewSet):
         salary_slip_data = {
             "employee": payroll.employee.get_full_name(),
             "employee_id": payroll.employee.username,
-            "pay_period": f"{payroll.pay_period_start} to "
-            f"{payroll.pay_period_end}",
+            "pay_period": f"{payroll.pay_period_start} to " f"{payroll.pay_period_end}",
             # noqa: E501
             # noqa: E501
             # noqa: E501
@@ -451,9 +446,7 @@ class PayrollEntryViewSet(HospitalFilterMixin, viewsets.ModelViewSet):
                 "medical_allowance": payroll.medical_allowance_cents / 100,
                 "transport_allowance": payroll.transport_allowance_cents / 100,
                 "other_allowances": payroll.other_allowances_cents / 100,
-                "overtime": (
-                    payroll.overtime_hours * payroll.overtime_rate_cents
-                )
+                "overtime": (payroll.overtime_hours * payroll.overtime_rate_cents)
                 # noqa: E501
                 # noqa: E501
                 / 100,
@@ -505,9 +498,7 @@ class FixedAssetViewSet(HospitalFilterMixin, viewsets.ModelViewSet):
         disposal_data = request.data
 
         asset.disposal_date = disposal_data.get("disposal_date")
-        asset.disposal_amount_cents = disposal_data.get(
-            "disposal_amount_cents", 0
-        )
+        asset.disposal_amount_cents = disposal_data.get("disposal_amount_cents", 0)
         # noqa: E501
         # noqa: E501
         asset.disposal_method = disposal_data.get("disposal_method", "")
@@ -563,9 +554,7 @@ class BankTransactionViewSet(HospitalFilterMixin, viewsets.ModelViewSet):
         reconcile_data = request.data
 
         if reconcile_data.get("payment_id"):
-            payment = AccountingPayment.objects.get(
-                id=reconcile_data["payment_id"]
-            )
+            payment = AccountingPayment.objects.get(id=reconcile_data["payment_id"])
             # noqa: E501
             # noqa: E501
             bank_txn.reconciled_payment = payment
@@ -688,9 +677,7 @@ class ReportsAPIView(APIView):
 
         if report_type == "trial_balance":
             as_of_date = request.data.get("as_of_date", timezone.now().date())
-            report_data = ReportGenerator.generate_trial_balance(
-                hospital, as_of_date
-            )
+            report_data = ReportGenerator.generate_trial_balance(hospital, as_of_date)
             # noqa: E501
             # noqa: E501
             return Response(report_data)
@@ -710,9 +697,7 @@ class ReportsAPIView(APIView):
 
         elif report_type == "balance_sheet":
             as_of_date = request.data.get("as_of_date", timezone.now().date())
-            report_data = ReportGenerator.generate_balance_sheet(
-                hospital, as_of_date
-            )
+            report_data = ReportGenerator.generate_balance_sheet(hospital, as_of_date)
             # noqa: E501
             # noqa: E501
             return Response(report_data)
@@ -780,15 +765,11 @@ class DashboardAPIView(APIView):
         )
 
         cash_balance = (
-            BankAccount.objects.filter(
-                hospital=hospital, is_active=True
-            ).aggregate(
+            BankAccount.objects.filter(hospital=hospital, is_active=True).aggregate(
                 # noqa: E501
                 # noqa: E501
                 total=Sum("current_balance_cents")
-            )[
-                "total"
-            ]
+            )["total"]
             or 0
         )
 
@@ -837,9 +818,7 @@ class ExportAPIView(APIView):
         """Export data based on request parameters"""
         serializer = ExportRequestSerializer(data=request.data)
         if not serializer.is_valid():
-            return Response(
-                serializer.errors, status=status.HTTP_400_BAD_REQUEST
-            )
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         # noqa: E501
         # noqa: E501
 
@@ -858,9 +837,7 @@ class ExportAPIView(APIView):
                 report_data = ReportGenerator.generate_profit_loss(
                     hospital, data["start_date"], data["end_date"]
                 )
-                filename = (
-                    f"profit_loss_{data['start_date']}_to_{data['end_date']}"
-                )
+                filename = f"profit_loss_{data['start_date']}_to_{data['end_date']}"
             # noqa: E501
             # noqa: E501
 
@@ -876,14 +853,10 @@ class ExportAPIView(APIView):
                     invoice_date__gte=data["start_date"],
                     invoice_date__lte=data["end_date"],
                 )
-                report_data = AccountingInvoiceSerializer(
-                    invoices, many=True
-                ).data
+                report_data = AccountingInvoiceSerializer(invoices, many=True).data
                 # noqa: E501
                 # noqa: E501
-                filename = (
-                    f"invoices_{data['start_date']}_to_{data['end_date']}"
-                )
+                filename = f"invoices_{data['start_date']}_to_{data['end_date']}"
             # noqa: E501
             # noqa: E501
 
@@ -891,9 +864,7 @@ class ExportAPIView(APIView):
                 report_data = ExportEngine.export_gst_returns(
                     hospital, data["start_date"], data["end_date"], "GSTR1"
                 )
-                filename = (
-                    f"gst_return_{data['start_date']}_to_{data['end_date']}"
-                )
+                filename = f"gst_return_{data['start_date']}_to_{data['end_date']}"
             # noqa: E501
             # noqa: E501
 
@@ -909,17 +880,15 @@ class ExportAPIView(APIView):
                     json.dumps(report_data, indent=2, default=str),
                     content_type="application/json",
                 )
-                response["Content-Disposition"] = (
-                    f'attachment; filename="{filename}.json"'
-                )
+                response[
+                    "Content-Disposition"
+                ] = f'attachment; filename="{filename}.json"'
 
             elif data["export_format"] == "EXCEL":
                 # Convert data to Excel format
                 if isinstance(report_data, list):
                     # Simple list format
-                    headers = (
-                        list(report_data[0].keys()) if report_data else []
-                    )
+                    headers = list(report_data[0].keys()) if report_data else []
                     # noqa: E501
                     # noqa: E501
                     rows = [list(row.values()) for row in report_data]
@@ -932,9 +901,7 @@ class ExportAPIView(APIView):
                         if not isinstance(v, (dict, list))
                     ]
 
-                excel_buffer = ExportEngine.export_to_excel(
-                    rows, headers, filename
-                )
+                excel_buffer = ExportEngine.export_to_excel(rows, headers, filename)
                 # noqa: E501
                 # noqa: E501
 
@@ -949,24 +916,20 @@ class ExportAPIView(APIView):
                     # noqa: E501
                     # noqa: E501
                 )
-                response["Content-Disposition"] = (
-                    f'attachment; filename="{filename}.xlsx"'
-                )
+                response[
+                    "Content-Disposition"
+                ] = f'attachment; filename="{filename}.xlsx"'
 
             elif data["export_format"] == "TALLY_XML":
-                xml_data = ExportEngine.export_to_tally_xml(
-                    report_data, "SALES"
-                )
+                xml_data = ExportEngine.export_to_tally_xml(report_data, "SALES")
                 # noqa: E501
                 # noqa: E501
-                response = HttpResponse(
-                    xml_data, content_type="application/xml"
-                )
+                response = HttpResponse(xml_data, content_type="application/xml")
                 # noqa: E501
                 # noqa: E501
-                response["Content-Disposition"] = (
-                    f'attachment; filename="{filename}.xml"'
-                )
+                response[
+                    "Content-Disposition"
+                ] = f'attachment; filename="{filename}.xml"'
 
             else:
                 return Response(
@@ -994,18 +957,14 @@ class DepreciationProcessingAPIView(APIView):
     def post(self, request):
         """Process depreciation for current month"""
         hospital = request.user.hospital
-        processing_date = request.data.get(
-            "processing_date", timezone.now().date()
-        )
+        processing_date = request.data.get("processing_date", timezone.now().date())
         # noqa: E501
         # noqa: E501
 
         try:
-            processed_count = (
-                DepreciationCalculator.process_monthly_depreciation(
-                    hospital,
-                    processing_date,
-                )
+            processed_count = DepreciationCalculator.process_monthly_depreciation(
+                hospital,
+                processing_date,
             )
             return Response(
                 {
@@ -1179,9 +1138,7 @@ class LedgerEntryViewSet(HospitalFilterMixin, viewsets.ReadOnlyModelViewSet):
     ordering_fields = ["transaction_date"]
 
 
-class AccountingAuditLogViewSet(
-    HospitalFilterMixin, viewsets.ReadOnlyModelViewSet
-):
+class AccountingAuditLogViewSet(HospitalFilterMixin, viewsets.ReadOnlyModelViewSet):
     # noqa: E501
     # noqa: E501
     """Read-only access to audit logs"""

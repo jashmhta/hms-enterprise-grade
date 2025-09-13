@@ -3,6 +3,7 @@ Custom permissions for accounting module with role-based access control.
 """
 
 from rest_framework import permissions
+
 from users.models import UserRole
 
 
@@ -18,9 +19,7 @@ class AccountingModulePermission(permissions.BasePermission):
 
         user_role = request.user.role
         action = view.action or "list"
-        view_name = (
-            getattr(view, "basename", "") or view.__class__.__name__.lower()
-        )
+        view_name = getattr(view, "basename", "") or view.__class__.__name__.lower()
         # noqa: E501
         # noqa: E501
 
@@ -310,9 +309,7 @@ class AuditLogPermission(permissions.BasePermission):
             return True
 
         # Audit logs are read-only for authorized users
-        if request.method == "GET" and hasattr(
-            request.user, "has_audit_access"
-        ):
+        if request.method == "GET" and hasattr(request.user, "has_audit_access"):
             # noqa: E501
             # noqa: E501
             return request.user.has_audit_access

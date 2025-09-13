@@ -94,8 +94,7 @@ def create_payroll_ledger_entries(sender, instance, created, **kwargs):
             except Exception as e:
                 # Log the error but don't prevent payroll approval
                 print(
-                    f"Error creating ledger entries for payroll "
-                    f"{instance.id}: {e}"
+                    f"Error creating ledger entries for payroll " f"{instance.id}: {e}"
                 )
 
 

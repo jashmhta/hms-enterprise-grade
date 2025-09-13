@@ -523,7 +523,7 @@ class ComplianceDocumentAdmin(admin.ModelAdmin):
         if obj.is_expiring_soon:
             return format_html(
                 '<span style="color: orange;">Expiring Soon</span>'
-            )   # noqa: E501
+            )  # noqa: E501
         elif obj.expiry_date and obj.expiry_date < timezone.now().date():
             return format_html('<span style="color: red;">Expired</span>')
         else:
@@ -706,7 +706,7 @@ class ServicePackageAdmin(admin.ModelAdmin):
         if obj.cost_price_cents > 0:
             margin = (
                 (obj.base_price_cents - obj.cost_price_cents)
-                / obj.base_price_cents   # noqa: E501
+                / obj.base_price_cents  # noqa: E501
             ) * 100
             return f"{margin:.1f}%"
         return "N/A"

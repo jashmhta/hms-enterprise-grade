@@ -85,9 +85,7 @@ class ChartOfAccountsSerializer(serializers.ModelSerializer):
 
 
 class CostCenterSerializer(serializers.ModelSerializer):
-    manager_name = serializers.CharField(
-        source="manager.get_full_name", read_only=True
-    )
+    manager_name = serializers.CharField(source="manager.get_full_name", read_only=True)
     # noqa: E501
     # noqa: E501
 
@@ -195,25 +193,17 @@ class InvoiceLineItemSerializer(serializers.ModelSerializer):
 
 class AccountingInvoiceSerializer(serializers.ModelSerializer):
     items = InvoiceLineItemSerializer(many=True, read_only=True)
-    patient_name = serializers.CharField(
-        source="patient.get_full_name", read_only=True
-    )
+    patient_name = serializers.CharField(source="patient.get_full_name", read_only=True)
     # noqa: E501
     # noqa: E501
-    customer_name = serializers.CharField(
-        source="customer.name", read_only=True
-    )
+    customer_name = serializers.CharField(source="customer.name", read_only=True)
     # noqa: E501
     # noqa: E501
     vendor_name = serializers.CharField(source="vendor.name", read_only=True)
-    cost_center_name = serializers.CharField(
-        source="cost_center.name", read_only=True
-    )
+    cost_center_name = serializers.CharField(source="cost_center.name", read_only=True)
     # noqa: E501
     # noqa: E501
-    currency_symbol = serializers.CharField(
-        source="currency.symbol", read_only=True
-    )
+    currency_symbol = serializers.CharField(source="currency.symbol", read_only=True)
     # noqa: E501
     # noqa: E501
     days_overdue = serializers.SerializerMethodField()
@@ -261,9 +251,7 @@ class AccountingPaymentSerializer(serializers.ModelSerializer):
     bank_account_name = serializers.CharField(
         source="bank_account.account_name", read_only=True
     )
-    currency_symbol = serializers.CharField(
-        source="currency.symbol", read_only=True
-    )
+    currency_symbol = serializers.CharField(source="currency.symbol", read_only=True)
     # noqa: E501
     # noqa: E501
 
@@ -280,9 +268,7 @@ class AccountingPaymentSerializer(serializers.ModelSerializer):
 
 class ExpenseSerializer(serializers.ModelSerializer):
     vendor_name = serializers.CharField(source="vendor.name", read_only=True)
-    cost_center_name = serializers.CharField(
-        source="cost_center.name", read_only=True
-    )
+    cost_center_name = serializers.CharField(source="cost_center.name", read_only=True)
     # noqa: E501
     # noqa: E501
     created_by_name = serializers.CharField(
@@ -291,9 +277,7 @@ class ExpenseSerializer(serializers.ModelSerializer):
     approved_by_name = serializers.CharField(
         source="approved_by.get_full_name", read_only=True
     )
-    currency_symbol = serializers.CharField(
-        source="currency.symbol", read_only=True
-    )
+    currency_symbol = serializers.CharField(source="currency.symbol", read_only=True)
     # noqa: E501
     # noqa: E501
 
@@ -310,9 +294,7 @@ class ExpenseSerializer(serializers.ModelSerializer):
 
 
 class BankAccountSerializer(serializers.ModelSerializer):
-    currency_symbol = serializers.CharField(
-        source="currency.symbol", read_only=True
-    )
+    currency_symbol = serializers.CharField(source="currency.symbol", read_only=True)
     # noqa: E501
     # noqa: E501
     unreconciled_count = serializers.SerializerMethodField()
@@ -349,9 +331,7 @@ class BankTransactionSerializer(serializers.ModelSerializer):
 
 
 class FixedAssetSerializer(serializers.ModelSerializer):
-    cost_center_name = serializers.CharField(
-        source="cost_center.name", read_only=True
-    )
+    cost_center_name = serializers.CharField(source="cost_center.name", read_only=True)
     # noqa: E501
     # noqa: E501
     vendor_name = serializers.CharField(source="vendor.name", read_only=True)
@@ -373,9 +353,7 @@ class FixedAssetSerializer(serializers.ModelSerializer):
         return obj.calculate_annual_depreciation()
 
     def get_remaining_life(self, obj):
-        years_passed = (
-            timezone.now().date() - obj.purchase_date
-        ).days / 365.25
+        years_passed = (timezone.now().date() - obj.purchase_date).days / 365.25
         # noqa: E501
         # noqa: E501
         return max(0, obj.useful_life_years - years_passed)
@@ -383,9 +361,7 @@ class FixedAssetSerializer(serializers.ModelSerializer):
 
 class DepreciationScheduleSerializer(serializers.ModelSerializer):
     asset_name = serializers.CharField(source="asset.name", read_only=True)
-    asset_code = serializers.CharField(
-        source="asset.asset_code", read_only=True
-    )
+    asset_code = serializers.CharField(source="asset.asset_code", read_only=True)
     # noqa: E501
     # noqa: E501
 
@@ -399,9 +375,7 @@ class PayrollEntrySerializer(serializers.ModelSerializer):
     employee_name = serializers.CharField(
         source="employee.get_full_name", read_only=True
     )
-    cost_center_name = serializers.CharField(
-        source="cost_center.name", read_only=True
-    )
+    cost_center_name = serializers.CharField(source="cost_center.name", read_only=True)
     # noqa: E501
     # noqa: E501
     created_by_name = serializers.CharField(
@@ -508,9 +482,7 @@ class VendorPayoutSerializer(serializers.ModelSerializer):
 
 
 class VendorPayoutItemSerializer(serializers.ModelSerializer):
-    patient_name = serializers.CharField(
-        source="patient.get_full_name", read_only=True
-    )
+    patient_name = serializers.CharField(source="patient.get_full_name", read_only=True)
     # noqa: E501
     # noqa: E501
     service_name = serializers.CharField(
@@ -549,9 +521,7 @@ class FinancialYearSerializer(serializers.ModelSerializer):
     def validate(self, data):
         if data.get("start_date") and data.get("end_date"):
             if data["start_date"] >= data["end_date"]:
-                raise serializers.ValidationError(
-                    "Start date must be before end date"
-                )
+                raise serializers.ValidationError("Start date must be before end date")
         # noqa: E501
         # noqa: E501
         return data
@@ -561,14 +531,10 @@ class BudgetSerializer(serializers.ModelSerializer):
     financial_year_name = serializers.CharField(
         source="financial_year.name", read_only=True
     )
-    cost_center_name = serializers.CharField(
-        source="cost_center.name", read_only=True
-    )
+    cost_center_name = serializers.CharField(source="cost_center.name", read_only=True)
     # noqa: E501
     # noqa: E501
-    account_name = serializers.CharField(
-        source="account.account_name", read_only=True
-    )
+    account_name = serializers.CharField(source="account.account_name", read_only=True)
     # noqa: E501
     # noqa: E501
 
@@ -683,9 +649,7 @@ class BankReconciliationSerializer(serializers.Serializer):
         # Ensure user has access to this bank account
         user = self.context["request"].user
         if data["bank_account"].hospital != user.hospital:
-            raise serializers.ValidationError(
-                "Access denied to this bank account"
-            )
+            raise serializers.ValidationError("Access denied to this bank account")
         # noqa: E501
         # noqa: E501
         return data
@@ -729,9 +693,7 @@ class ExportRequestSerializer(serializers.Serializer):
         # Validate date ranges
         if data.get("start_date") and data.get("end_date"):
             if data["start_date"] > data["end_date"]:
-                raise serializers.ValidationError(
-                    "Start date cannot be after end date"
-                )
+                raise serializers.ValidationError("Start date cannot be after end date")
         # noqa: E501
         # noqa: E501
 
@@ -851,9 +813,7 @@ class ReportScheduleSerializer(serializers.ModelSerializer):
 
 
 class AccountingAuditLogSerializer(serializers.ModelSerializer):
-    user_name = serializers.CharField(
-        source="user.get_full_name", read_only=True
-    )
+    user_name = serializers.CharField(source="user.get_full_name", read_only=True)
     # noqa: E501
     # noqa: E501
 

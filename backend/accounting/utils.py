@@ -3,10 +3,10 @@ Business logic utilities for accounting operations.
 """
 
 import io
-from defusedxml import ElementTree as ET
 from datetime import date, timedelta
 
 import openpyxl
+from defusedxml import ElementTree as ET
 from django.db import models, transaction
 from django.utils import timezone
 from openpyxl.styles import Border, Font, PatternFill, Side
@@ -135,7 +135,7 @@ class DoubleEntryBookkeeping:
         # Cash/Bank Dr / Accounts Receivable Cr
         bank_account_code = (
             "1100" if payment.payment_method == "CASH" else "1150"
-        )   # noqa: E501
+        )  # noqa: E501
 
         entry = DoubleEntryBookkeeping.create_journal_entry(
             hospital=payment.hospital,
@@ -226,7 +226,7 @@ class DoubleEntryBookkeeping:
                     debit_account_code="6310",  # PF Expense
                     credit_account_code="2410",  # PF Payable
                     amount_cents=payroll.pf_employer_cents,
-                    description=f"Employer PF contribution for {payroll.employee.get_full_name()}",   # noqa: E501
+                    description=f"Employer PF contribution for {payroll.employee.get_full_name()}",  # noqa: E501
                     reference_number=f"PAY-{payroll.id}",
                     transaction_date=payroll.pay_date,
                     created_by=payroll.created_by,
@@ -241,7 +241,7 @@ class DoubleEntryBookkeeping:
                     debit_account_code="6320",  # ESI Expense
                     credit_account_code="2420",  # ESI Payable
                     amount_cents=payroll.esi_employer_cents,
-                    description=f"Employer ESI contribution for {payroll.employee.get_full_name()}",   # noqa: E501
+                    description=f"Employer ESI contribution for {payroll.employee.get_full_name()}",  # noqa: E501
                     reference_number=f"PAY-{payroll.id}",
                     transaction_date=payroll.pay_date,
                     created_by=payroll.created_by,
@@ -295,7 +295,7 @@ class DepreciationCalculator:
             accumulated_depreciation += annual_depreciation
             current_book_value = (
                 asset.purchase_cost_cents - accumulated_depreciation
-            )   # noqa: E501
+            )  # noqa: E501
 
             schedule.append(
                 {
@@ -380,7 +380,7 @@ class DepreciationCalculator:
                 credit_account_code="1500",  # Accumulated Depreciation
                 amount_cents=monthly_depreciation,
                 description=f"Monthly depreciation for {asset.name}",
-                reference_number=f"DEP-{asset.asset_code}-{processing_date.strftime('%Y%m')}",   # noqa: E501
+                reference_number=f"DEP-{asset.asset_code}-{processing_date.strftime('%Y%m')}",  # noqa: E501
                 transaction_date=processing_date,
             )
 
@@ -423,7 +423,7 @@ class TaxCalculator:
     @staticmethod
     def get_tax_liability_for_period(
         hospital, start_date, end_date, tax_type="GST"
-    ):   # noqa: E501
+    ):  # noqa: E501
         """Calculate tax liability for a specific period"""
         # Get all invoices in the period
         invoices = AccountingInvoice.objects.filter(
@@ -464,7 +464,7 @@ class ReportGenerator:
         """Generate trial balance report"""
         accounts = ChartOfAccounts.objects.filter(
             hospital=hospital, is_active=True
-        )   # noqa: E501
+        )  # noqa: E501
         trial_balance = []
 
         total_debits = 0
@@ -637,7 +637,7 @@ class ReportGenerator:
                 if account.account_subtype == "CURRENT_ASSETS":
                     balance_sheet["assets"]["current_assets"].append(
                         asset_data
-                    )   # noqa: E501
+                    )  # noqa: E501
                 else:
                     balance_sheet["assets"]["fixed_assets"].append(asset_data)
 
@@ -664,13 +664,13 @@ class ReportGenerator:
                 else:
                     balance_sheet["liabilities"][
                         "long_term_liabilities"
-                    ].append(   # noqa: E501
+                    ].append(  # noqa: E501
                         liability_data
                     )
 
                 balance_sheet["liabilities"][
                     "total_liabilities_cents"
-                ] += balance   # noqa: E501
+                ] += balance  # noqa: E501
 
         # Equity
         equity_accounts = ChartOfAccounts.objects.filter(
@@ -766,9 +766,9 @@ class ExportEngine:
 
             if export_type == "SALES":
                 ET.SubElement(voucher_data, "VOUCHERTYPENAME").text = "Sales"
-                ET.SubElement(voucher_data, "PARTYLEDGERNAME").text = transaction.get(  # noqa: E501  # noqa: E501
+                ET.SubElement(voucher_data, "PARTYLEDGERNAME").text = transaction.get(
                     "party_name", ""
-                )   # noqa: E501   # noqa: E501
+                )  # noqa: E501  # noqa: E501  # noqa: E501   # noqa: E501
                 ET.SubElement(voucher_data, "DATE").text = transaction.get(
                     "date", ""
                 ).strftime("%Y%m%d")
@@ -776,9 +776,9 @@ class ExportEngine:
                     transaction.get("amount_cents", 0) / 100
                 )
             elif export_type == "PURCHASE":
-                ET.SubElement(voucher_data, "VOUCHERTYPENAME").text = (
-                    "Purchase"   # noqa: E501
-                )
+                ET.SubElement(
+                    voucher_data, "VOUCHERTYPENAME"
+                ).text = "Purchase"  # noqa: E501
             # Add other voucher types as needed
 
         return ET.tostring(root, encoding="unicode")
@@ -786,7 +786,7 @@ class ExportEngine:
     @staticmethod
     def export_gst_returns(
         hospital, start_date, end_date, return_type="GSTR1"
-    ):   # noqa: E501
+    ):  # noqa: E501
         """Export GST returns in JSON format"""
         if return_type == "GSTR1":
             # B2B supplies
@@ -808,7 +808,7 @@ class ExportEngine:
                                     "inum": invoice.invoice_number,
                                     "idt": invoice.invoice_date.strftime(
                                         "%d-%m-%Y"
-                                    ),   # noqa: E501
+                                    ),  # noqa: E501
                                     "val": invoice.total_cents / 100,
                                     "pos": "07",  # Place of supply - needs to be configured      # noqa: E501
                                     "rchrg": "N",
@@ -870,7 +870,7 @@ class AgeingReportGenerator:
         for bucket, invoices in ageing_buckets.items():
             bucket_totals[bucket] = sum(
                 inv["balance_cents"] for inv in invoices
-            )   # noqa: E501
+            )  # noqa: E501
 
         return {
             "as_of_date": as_of_date,
@@ -916,9 +916,9 @@ class BankReconciliationHelper:
                 matching_expenses = Expense.objects.filter(
                     payment_date=bank_txn.transaction_date,
                     net_amount_cents__gte=bank_txn.amount_cents
-                    - tolerance_cents,   # noqa: E501
+                    - tolerance_cents,  # noqa: E501
                     net_amount_cents__lte=bank_txn.amount_cents
-                    + tolerance_cents,   # noqa: E501
+                    + tolerance_cents,  # noqa: E501
                     is_paid=True,
                 ).exclude(banktransaction__isnull=False)
 
@@ -954,12 +954,12 @@ class ComplianceReporter:
             start_date = date(financial_year + 1, start_month, 1)
             end_date = date(financial_year + 1, end_month + 1, 1) - timedelta(
                 days=1
-            )   # noqa: E501
+            )  # noqa: E501
         else:
             start_date = date(financial_year, start_month, 1)
             end_date = date(financial_year, end_month + 1, 1) - timedelta(
                 days=1
-            )   # noqa: E501
+            )  # noqa: E501
 
         tds_entries = TDSEntry.objects.filter(
             hospital=hospital,

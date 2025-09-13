@@ -1,16 +1,13 @@
 from django.contrib.auth.hashers import make_password
-from django.shortcuts import render
 from drf_spectacular.utils import OpenApiResponse, extend_schema
-from rest_framework import status, viewsets
 from rest_framework.exceptions import PermissionDenied
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from rest_framework.viewsets import ViewSet
 
 from .models import User
 from .serializers import UserSerializer
-
-# Create your views here.
 
 
 class MeView(APIView):
@@ -21,7 +18,7 @@ class MeView(APIView):
         return Response(UserSerializer(request.user).data)
 
 
-class UserViewSet(viewsets.ModelViewSet):
+class UserViewSet(ViewSet):
     serializer_class = UserSerializer
     queryset = User.objects.select_related("hospital").all()
     permission_classes = [IsAuthenticated]

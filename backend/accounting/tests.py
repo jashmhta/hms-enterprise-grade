@@ -7,6 +7,7 @@ from decimal import Decimal
 from django.contrib.auth import get_user_model
 from django.test import TestCase
 from django.utils import timezone
+
 from hospitals.models import Hospital
 from users.models import UserRole
 
@@ -25,11 +26,7 @@ from .models import (
     PayrollEntry,
     Vendor,
 )
-from .utils import (
-    DepreciationCalculator,
-    DoubleEntryBookkeeping,
-    ReportGenerator,
-)
+from .utils import DepreciationCalculator, DoubleEntryBookkeeping, ReportGenerator
 
 User = get_user_model()
 
@@ -301,7 +298,7 @@ class DepreciationTest(AccountingModuleTestCase):
         # Test monthly depreciation
         monthly_depreciation = DepreciationCalculator.calculate_monthly_depreciation(
             asset
-        )   # noqa: E501   # noqa: E501
+        )  # noqa: E501   # noqa: E501
         expected_monthly = expected_annual // 12
 
         self.assertEqual(monthly_depreciation, expected_monthly)
@@ -409,7 +406,7 @@ class PayrollTest(AccountingModuleTestCase):
             username="testdoc",
             email="doc@test.com",
             password="secure_test_password",
-            role=UserRole.DOCTOR,
+            role=UserRole.ATTENDING_PHYSICIAN,
             hospital=self.hospital,
         )
 

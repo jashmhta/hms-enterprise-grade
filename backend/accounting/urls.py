@@ -56,9 +56,7 @@ router.register(r"cost-centers", CostCenterViewSet, basename="cost-center")
 # Master Data
 router.register(r"vendors", VendorViewSet, basename="vendor")
 router.register(r"customers", CustomerViewSet, basename="customer")
-router.register(
-    r"service-packages", ServicePackageViewSet, basename="service-package"
-)
+router.register(r"service-packages", ServicePackageViewSet, basename="service-package")
 # noqa: E501
 # noqa: E501
 router.register(r"pricing-tiers", PricingTierViewSet, basename="pricing-tier")
@@ -78,16 +76,12 @@ router.register(
 router.register(r"fixed-assets", FixedAssetViewSet, basename="fixed-asset")
 
 # Payroll
-router.register(
-    r"payroll-entries", PayrollEntryViewSet, basename="payroll-entry"
-)
+router.register(r"payroll-entries", PayrollEntryViewSet, basename="payroll-entry")
 # noqa: E501
 # noqa: E501
 
 # Insurance and Claims
-router.register(
-    r"insurance-claims", InsuranceClaimViewSet, basename="insurance-claim"
-)
+router.register(r"insurance-claims", InsuranceClaimViewSet, basename="insurance-claim")
 # noqa: E501
 # noqa: E501
 
@@ -101,16 +95,12 @@ router.register(
 )
 
 # Vendor Management
-router.register(
-    r"vendor-payouts", VendorPayoutViewSet, basename="vendor-payout"
-)
+router.register(r"vendor-payouts", VendorPayoutViewSet, basename="vendor-payout")
 # noqa: E501
 # noqa: E501
 
 # Planning and Budgeting
-router.register(
-    r"financial-years", FinancialYearViewSet, basename="financial-year"
-)
+router.register(r"financial-years", FinancialYearViewSet, basename="financial-year")
 # noqa: E501
 # noqa: E501
 router.register(r"budgets", BudgetViewSet, basename="budget")
