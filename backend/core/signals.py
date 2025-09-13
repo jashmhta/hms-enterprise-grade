@@ -6,6 +6,7 @@ from billing.models import Bill, Payment
 from django.contrib.contenttypes.models import ContentType
 from django.db.models.signals import post_delete, post_save
 from django.dispatch import receiver
+from datetime import date, datetime
 from django.forms.models import model_to_dict
 from patients.models import Patient
 from pharmacy.models import Prescription
@@ -33,7 +34,6 @@ def log_action(instance, action, user=None):
     data = {}
     try:
         data = model_to_dict(instance)
-        from datetime import date, datetime
 
         for key, value in data.items():
             if isinstance(value, (date, datetime)):

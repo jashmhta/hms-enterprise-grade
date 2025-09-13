@@ -62,7 +62,9 @@ class AppointmentTemplate(TenantModel):
     """Templates for common appointment types"""
 
     name = models.CharField(max_length=200)
-    appointment_type = models.CharField(max_length=20, choices=AppointmentType.choices)   # noqa: E501
+    appointment_type = models.CharField(
+        max_length=20, choices=AppointmentType.choices
+    )  # noqa: E501
     duration_minutes = models.PositiveIntegerField(default=30)
     description = models.TextField(blank=True)
 
@@ -153,9 +155,7 @@ class Appointment(TenantModel):
     """Enhanced appointment model with enterprise features"""
 
     uuid = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
-    appointment_number = models.CharField(
-            max_length=50, db_index=True, default="TEMP"
-        )
+    appointment_number = models.CharField(max_length=50, db_index=True, default="TEMP")
 
     # Patient & Provider
     patient = models.ForeignKey(
@@ -339,7 +339,9 @@ class Appointment(TenantModel):
             )
 
             if overlapping.exists():
-                raise ValidationError("Overlapping appointment for this provider")   # noqa: E501
+                raise ValidationError(
+                    "Overlapping appointment for this provider"
+                )  # noqa: E501
 
     def save(self, *args, **kwargs):
         # Generate appointment number if not provided
@@ -385,7 +387,9 @@ class Appointment(TenantModel):
 
         # Check if within cancellation window
         if self.template and self.template.cancellation_hours:
-            cutoff = self.start_at - timedelta(hours=self.template.cancellation_hours)   # noqa: E501
+            cutoff = self.start_at - timedelta(
+                hours=self.template.cancellation_hours
+            )  # noqa: E501
             return timezone.now() < cutoff
 
         return True
@@ -453,7 +457,7 @@ class AppointmentResource(models.Model):
 
         if overlapping.exists():
             raise ValidationError(
-                f"Resource {self.resource.name} is not available during this time"   # noqa: E501
+                f"Resource {self.resource.name} is not available during this time"  # noqa: E501
             )
 
 
@@ -468,7 +472,9 @@ class WaitList(TenantModel):
     provider = models.ForeignKey(
         "users.User", on_delete=models.CASCADE, related_name="waitlist_entries"
     )
-    appointment_type = models.CharField(max_length=20, choices=AppointmentType.choices)   # noqa: E501
+    appointment_type = models.CharField(
+        max_length=20, choices=AppointmentType.choices
+    )  # noqa: E501
 
     # Preferences
     preferred_date_from = models.DateField()
@@ -605,7 +611,9 @@ class AppointmentHistory(models.Model):
     notes = models.TextField(blank=True)
 
     # Actor information
-    changed_by = models.ForeignKey("users.User", on_delete=models.SET_NULL, null=True)   # noqa: E501
+    changed_by = models.ForeignKey(
+        "users.User", on_delete=models.SET_NULL, null=True
+    )  # noqa: E501
     timestamp = models.DateTimeField(auto_now_add=True)
     ip_address = models.GenericIPAddressField(null=True, blank=True)
 
@@ -618,3 +626,270 @@ class AppointmentHistory(models.Model):
 
     def __str__(self):
         return f"{self.appointment} - {self.action} at {self.timestamp}"
+
+
+class SurgeryType(TenantModel):
+    """Types of surgical procedures"""
+
+    name = models.CharField(max_length=100)
+    description = models.TextField(blank=True)
+    estimated_duration = models.PositiveIntegerField(default=60)
+    complexity_level = models.CharField(
+        max_length=20, choices=[("LOW", "Low"), ("MEDIUM", "Medium"), ("HIGH", "High")]
+    )
+    requires_anesthesia = models.BooleanField(default=True)
+    anesthesia_type = models.CharField(max_length=50, blank=True)
+    required_equipment = models.JSONField(default=list, blank=True)
+    is_active = models.BooleanField(default=True)
+
+    class Meta:
+        ordering = ["name"]
+        indexes = [
+            models.Index(fields=["hospital", "is_active"]),
+        ]
+
+    def __str__(self):
+        return self.name
+
+
+class OTStatus(models.TextChoices):
+    SCHEDULED = "SCHEDULED", "Scheduled"
+    CONFIRMED = "CONFIRMED", "Confirmed"
+    IN_PROGRESS = "IN_PROGRESS", "In Progress"
+    COMPLETED = "COMPLETED", "Completed"
+    CANCELLED = "CANCELLED", "Cancelled"
+    DELAYED = "DELAYED", "Delayed"
+
+
+class OTSlot(TenantModel):
+    """Operating Theater time slots"""
+
+    ot_room = models.ForeignKey(
+        Resource,
+        on_delete=models.CASCADE,
+        related_name="ot_slots",
+        limit_choices_to={"resource_type": "ROOM"},
+    )
+    start_time = models.DateTimeField()
+    end_time = models.DateTimeField()
+    duration_minutes = models.PositiveIntegerField()
+    is_available = models.BooleanField(default=True)
+    max_cases = models.PositiveIntegerField(default=1)
+    scheduled_cases = models.PositiveIntegerField(default=0)
+    surgery_type_allowed = models.ManyToManyField(SurgeryType, blank=True)
+    requires_anesthesia = models.BooleanField(default=True)
+    equipment_needed = models.JSONField(default=list, blank=True)
+    scheduled_by = models.ForeignKey(
+        "users.User", on_delete=models.SET_NULL, null=True, blank=True
+    )
+    notes = models.TextField(blank=True)
+
+    class Meta:
+        ordering = ["start_time"]
+        indexes = [
+            models.Index(fields=["ot_room", "start_time"]),
+            models.Index(fields=["is_available", "start_time"]),
+        ]
+
+    def clean(self):
+        if self.end_time <= self.start_time:
+            raise ValidationError("End time must be after start time")
+        if self.duration_minutes <= 0:
+            raise ValidationError("Duration must be positive")
+
+    def save(self, *args, **kwargs):
+        if self.start_time and self.end_time:
+            self.duration_minutes = int(
+                (self.end_time - self.start_time).total_seconds() / 60
+            )
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+        return f"OT Slot {self.ot_room.name} - {self.start_time}"
+
+    def get_remaining_capacity(self):
+        return self.max_cases - self.scheduled_cases
+
+    def is_fully_booked(self):
+        return self.scheduled_cases >= self.max_cases
+
+    def can_accommodate_case(self, surgery_type, duration):
+        if not self.is_available:
+            return False
+        if self.is_fully_booked():
+            return False
+        if surgery_type not in self.surgery_type_allowed.all():
+            return False
+        if duration > self.duration_minutes:
+            return False
+        return True
+
+
+class OTBooking(TenantModel):
+    """Operating Theater bookings linked to appointments"""
+
+    appointment = models.OneToOneField(
+        Appointment, on_delete=models.CASCADE, related_name="ot_booking"
+    )
+    ot_slot = models.ForeignKey(
+        OTSlot, on_delete=models.CASCADE, related_name="bookings"
+    )
+    lead_surgeon = models.ForeignKey(
+        "users.User",
+        on_delete=models.PROTECT,
+        related_name="lead_ot_bookings",
+        limit_choices_to={"role": "SURGEON"},
+    )
+    assisting_surgeon = models.ForeignKey(
+        "users.User",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="assisting_ot_bookings",
+        limit_choices_to={"role": "SURGEON"},
+    )
+    anesthesiologist = models.ForeignKey(
+        "users.User",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="anesthesiologist_ot_bookings",
+        limit_choices_to={"role": "ANESTHESIOLOGIST"},
+    )
+    scrub_nurse = models.ForeignKey(
+        "users.User",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="scrub_ot_bookings",
+        limit_choices_to={"role": "NURSE"},
+    )
+    circulating_nurse = models.ForeignKey(
+        "users.User",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="circulating_ot_bookings",
+        limit_choices_to={"role": "NURSE"},
+    )
+    procedure_name = models.CharField(max_length=255)
+    procedure_code = models.CharField(max_length=50, blank=True)
+    estimated_duration = models.PositiveIntegerField()
+    actual_duration = models.PositiveIntegerField(null=True, blank=True)
+    surgery_type = models.ForeignKey(SurgeryType, on_delete=models.PROTECT)
+    anesthesia_type = models.CharField(max_length=50, blank=True)
+    anesthesia_notes = models.TextField(blank=True)
+    pre_op_checklist_completed = models.BooleanField(default=False)
+    time_out_completed = models.BooleanField(default=False)
+    pre_op_labs_reviewed = models.BooleanField(default=False)
+    informed_consent = models.BooleanField(default=False)
+    incision_time = models.DateTimeField(null=True, blank=True)
+    closure_time = models.DateTimeField(null=True, blank=True)
+    blood_loss_ml = models.PositiveIntegerField(null=True, blank=True)
+    fluids_given_ml = models.PositiveIntegerField(null=True, blank=True)
+    specimens_sent = models.TextField(blank=True)
+    complications = models.TextField(blank=True)
+    recovery_room_assigned = models.BooleanField(default=False)
+    post_op_orders = models.TextField(blank=True)
+    pain_management_plan = models.TextField(blank=True)
+    status = models.CharField(
+        max_length=20, choices=OTStatus.choices, default=OTStatus.SCHEDULED
+    )
+    booked_by = models.ForeignKey(
+        "users.User",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="booked_ot_bookings",
+    )
+    confirmed_by = models.ForeignKey(
+        "users.User",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="confirmed_ot_bookings",
+    )
+    confirmed_at = models.DateTimeField(null=True, blank=True)
+    priority = models.CharField(
+        max_length=10, choices=Priority.choices, default=Priority.NORMAL
+    )
+    is_confidential = models.BooleanField(default=False)
+    special_instructions = models.TextField(blank=True)
+
+    class Meta:
+        ordering = ["-created_at"]
+        indexes = [
+            models.Index(fields=["ot_slot", "status"]),
+            models.Index(fields=["appointment", "status"]),
+        ]
+
+    def clean(self):
+        if self.appointment and self.ot_slot:
+            # Check if appointment timing matches OT slot
+            if not (
+                self.appointment.start_at == self.ot_slot.start_time
+                and self.appointment.end_at == self.ot_slot.end_time
+            ):
+                raise ValidationError("Appointment timing must match OT slot")
+
+        # Check if surgery type is allowed in this slot
+        if (
+            self.ot_slot
+            and self.surgery_type not in self.ot_slot.surgery_type_allowed.all()
+        ):
+            raise ValidationError("Surgery type not allowed in this OT slot")
+
+        # Check estimated duration
+        if self.estimated_duration > self.ot_slot.duration_minutes:
+            raise ValidationError("Estimated duration exceeds slot time")
+
+    def save(self, *args, **kwargs):
+        # Update OT slot availability
+        if self.ot_slot:
+            if self.pk is None:  # New booking
+                self.ot_slot.scheduled_cases += 1
+                self.ot_slot.is_available = (
+                    self.ot_slot.scheduled_cases < self.ot_slot.max_cases
+                )
+                self.ot_slot.save()
+            else:  # Update existing
+                old = OTBooking.objects.get(pk=self.pk)
+                if old.ot_slot != self.ot_slot:
+                    old.ot_slot.scheduled_cases -= 1
+                    old.ot_slot.save()
+                    self.ot_slot.scheduled_cases += 1
+                    self.ot_slot.save()
+
+        super().save(*args, **kwargs)
+
+    def delete(self, *args, **kwargs):
+        # Update OT slot when deleting booking
+        if self.ot_slot:
+            self.ot_slot.scheduled_cases -= 1
+            self.ot_slot.is_available = (
+                self.ot_slot.scheduled_cases < self.ot_slot.max_cases
+            )
+            self.ot_slot.save()
+        super().delete(*args, **kwargs)
+
+    def __str__(self):
+        return (
+            f"OT Booking {self.appointment.appointment_number} - {self.procedure_name}"
+        )
+
+    def is_ready_for_surgery(self):
+        """Check if all pre-op requirements are met"""
+        return (
+            self.pre_op_checklist_completed
+            and self.time_out_completed
+            and self.pre_op_labs_reviewed
+            and self.informed_consent
+        )
+
+    def calculate_actual_duration(self):
+        if self.incision_time and self.closure_time:
+            duration = (self.closure_time - self.incision_time).total_seconds() / 60
+            self.actual_duration = int(duration)
+            self.save()
+            return self.actual_duration
+        return None

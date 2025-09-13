@@ -10,7 +10,7 @@ class MedicationAdmin(admin.ModelAdmin):
         "strength",
         "form",
         "hospital",
-        "stock_quantity",
+        "total_stock_quantity",
         "min_stock_level",
     )
     list_filter = ("hospital",)

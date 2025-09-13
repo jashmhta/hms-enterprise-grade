@@ -9,7 +9,9 @@ class LowStockTest(TestCase):
     def setUp(self):
         self.h = Hospital.objects.create(name="H", code="h")
         plan = Plan.objects.create(name="Test Plan", enable_pharmacy=True)
-        HospitalPlan.objects.create(hospital=self.h, plan=plan)
+        hp = HospitalPlan.objects.create(hospital=self.h, plan=plan)
+        hp.enable_pharmacy = True
+        hp.save()
         User = get_user_model()
         self.user = User.objects.create_user(
             username="u", password="x", role=UserRole.PHARMACIST, hospital=self.h

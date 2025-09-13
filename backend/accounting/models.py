@@ -68,6 +68,7 @@ class Currency(TenantModel):
     is_active = models.BooleanField(default=True)
 
     class Meta:
+        app_label = "accounting"
         unique_together = ("hospital", "code")
         ordering = ["code"]
 
@@ -103,6 +104,7 @@ class TaxConfiguration(TenantModel):
     effective_to = models.DateField(null=True, blank=True)
 
     class Meta:
+        app_label = "accounting"
         ordering = ["-effective_from", "tax_type"]
 
     def __str__(self):
@@ -134,6 +136,7 @@ class ChartOfAccounts(TenantModel):
     )  # Prevents deletion of core accounts
 
     class Meta:
+        app_label = "accounting"
         unique_together = ("hospital", "account_code")
         ordering = ["account_code"]
 
@@ -170,6 +173,7 @@ class CostCenter(TenantModel):
     is_active = models.BooleanField(default=True)
 
     class Meta:
+        app_label = "accounting"
         unique_together = ("hospital", "code")
         ordering = ["code"]
 
@@ -198,6 +202,7 @@ class Vendor(TenantModel):
     is_active = models.BooleanField(default=True)
 
     class Meta:
+        app_label = "accounting"
         unique_together = ("hospital", "vendor_code")
         ordering = ["name"]
 
@@ -230,6 +235,7 @@ class Customer(TenantModel):
     is_active = models.BooleanField(default=True)
 
     class Meta:
+        app_label = "accounting"
         unique_together = ("hospital", "customer_code")
         ordering = ["name"]
 
@@ -260,6 +266,7 @@ class ServicePackage(TenantModel):
     is_active = models.BooleanField(default=True)
 
     class Meta:
+        app_label = "accounting"
         unique_together = ("hospital", "package_code")
         ordering = ["package_code"]
 
@@ -280,6 +287,7 @@ class ServicePackageItem(TenantModel):
     override_price_cents = models.BigIntegerField(null=True, blank=True)
 
     class Meta:
+        app_label = "accounting"
         unique_together = ("package", "service")
 
 
@@ -304,6 +312,7 @@ class PricingTier(TenantModel):
     is_active = models.BooleanField(default=True)
 
     class Meta:
+        app_label = "accounting"
         unique_together = ("hospital", "tier_code")
         ordering = ["tier_code"]
 
@@ -356,6 +365,7 @@ class LedgerEntry(TenantModel):
     )
 
     class Meta:
+        app_label = "accounting"
         ordering = ["-transaction_date", "-created_at"]
         indexes = [
             models.Index(fields=["transaction_date"]),
@@ -445,6 +455,7 @@ class AccountingInvoice(TenantModel):
     created_by = models.ForeignKey(User, on_delete=models.CASCADE)
 
     class Meta:
+        app_label = "accounting"
         ordering = ["-invoice_date"]
         indexes = [
             models.Index(fields=["invoice_date"]),
@@ -647,6 +658,7 @@ class AccountingPayment(TenantModel):
     received_by = models.ForeignKey(User, on_delete=models.CASCADE)
 
     class Meta:
+        app_label = "accounting"
         ordering = ["-payment_date"]
 
     def save(self, *args, **kwargs):
@@ -738,6 +750,7 @@ class Expense(TenantModel):
     )
 
     class Meta:
+        app_label = "accounting"
         ordering = ["-expense_date"]
 
     def save(self, *args, **kwargs):
@@ -796,6 +809,7 @@ class BankAccount(TenantModel):
     is_active = models.BooleanField(default=True)
 
     class Meta:
+        app_label = "accounting"
         unique_together = ("hospital", "account_number", "ifsc_code")
 
     def __str__(self):
@@ -855,6 +869,7 @@ class BankTransaction(TenantModel):
     reconciled_at = models.DateTimeField(null=True, blank=True)
 
     class Meta:
+        app_label = "accounting"
         ordering = ["-transaction_date"]
 
     def save(self, *args, **kwargs):
@@ -922,6 +937,7 @@ class FixedAsset(TenantModel):
     is_active = models.BooleanField(default=True)
 
     class Meta:
+        app_label = "accounting"
         unique_together = ("hospital", "asset_code")
         ordering = ["asset_code"]
 
@@ -966,6 +982,7 @@ class DepreciationSchedule(TenantModel):
     processed_at = models.DateTimeField(null=True, blank=True)
 
     class Meta:
+        app_label = "accounting"
         unique_together = ("asset", "depreciation_date")
         ordering = ["depreciation_date"]
 
@@ -1041,6 +1058,7 @@ class PayrollEntry(TenantModel):
     )
 
     class Meta:
+        app_label = "accounting"
         unique_together = ("employee", "pay_period_start", "pay_period_end")
         ordering = ["-pay_date"]
 
@@ -1124,6 +1142,7 @@ class InsuranceClaim(TenantModel):
     created_by = models.ForeignKey(User, on_delete=models.CASCADE)
 
     class Meta:
+        app_label = "accounting"
         ordering = ["-submission_date"]
 
     def save(self, *args, **kwargs):
@@ -1205,6 +1224,7 @@ class TDSEntry(TenantModel):
     )
 
     class Meta:
+        app_label = "accounting"
         ordering = ["-deduction_date"]
 
     def save(self, *args, **kwargs):
@@ -1252,6 +1272,7 @@ class BookLock(TenantModel):
     reason = models.TextField()
 
     class Meta:
+        app_label = "accounting"
         unique_together = ("hospital", "lock_date", "lock_type")
         ordering = ["-lock_date"]
 
@@ -1272,6 +1293,7 @@ class AccountingPeriod(TenantModel):
     closed_at = models.DateTimeField(null=True, blank=True)
 
     class Meta:
+        app_label = "accounting"
         unique_together = ("hospital", "start_date", "end_date")
         ordering = ["-start_date"]
 
@@ -1314,6 +1336,7 @@ class VendorPayout(TenantModel):
     created_by = models.ForeignKey(User, on_delete=models.CASCADE)
 
     class Meta:
+        app_label = "accounting"
         ordering = ["-payout_date"]
 
     def save(self, *args, **kwargs):
@@ -1395,6 +1418,7 @@ class RecurringInvoice(TenantModel):
     created_by = models.ForeignKey(User, on_delete=models.CASCADE)
 
     class Meta:
+        app_label = "accounting"
         ordering = ["next_billing_date"]
 
 
@@ -1419,6 +1443,7 @@ class TaxLiability(TenantModel):
     acknowledgment_number = models.CharField(max_length=100, blank=True)
 
     class Meta:
+        app_label = "accounting"
         unique_together = (
             "hospital",
             "period_start",
@@ -1456,6 +1481,7 @@ class ComplianceDocument(TenantModel):
     is_active = models.BooleanField(default=True)
 
     class Meta:
+        app_label = "accounting"
         unique_together = ("hospital", "document_type", "document_number")
         ordering = ["expiry_date"]
 
@@ -1483,6 +1509,7 @@ class FinancialYear(TenantModel):
     is_locked = models.BooleanField(default=False)
 
     class Meta:
+        app_label = "accounting"
         unique_together = ("hospital", "name")
         ordering = ["-start_date"]
 
@@ -1519,6 +1546,7 @@ class Budget(TenantModel):
     created_by = models.ForeignKey(User, on_delete=models.CASCADE)
 
     class Meta:
+        app_label = "accounting"
         unique_together = ("financial_year", "cost_center", "account")
         ordering = ["cost_center", "account"]
 
@@ -1562,6 +1590,7 @@ class ProviderCommissionStructure(TenantModel):
     effective_to = models.DateField(null=True, blank=True)
 
     class Meta:
+        app_label = "accounting"
         unique_together = ("vendor", "service", "effective_from")
         ordering = ["-effective_from"]
 
@@ -1601,6 +1630,7 @@ class ReportSchedule(TenantModel):
     created_by = models.ForeignKey(User, on_delete=models.CASCADE)
 
     class Meta:
+        app_label = "accounting"
         ordering = ["next_generation"]
 
 
@@ -1633,6 +1663,7 @@ class AccountingAuditLog(TenantModel):
     timestamp = models.DateTimeField(auto_now_add=True)
 
     class Meta:
+        app_label = "accounting"
         ordering = ["-timestamp"]
         indexes = [
             models.Index(fields=["table_name", "record_id"]),
@@ -1674,6 +1705,7 @@ class ImportBatch(TenantModel):
     imported_by = models.ForeignKey(User, on_delete=models.CASCADE)
 
     class Meta:
+        app_label = "accounting"
         ordering = ["-created_at"]
 
 
@@ -1697,4 +1729,5 @@ class ExportLog(TenantModel):
     exported_by = models.ForeignKey(User, on_delete=models.CASCADE)
 
     class Meta:
+        app_label = "accounting"
         ordering = ["-created_at"]

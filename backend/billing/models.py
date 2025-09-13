@@ -54,9 +54,7 @@ class Bill(TenantModel):
 
 
 class BillLineItem(TenantModel):
-    bill = models.ForeignKey(
-        Bill, on_delete=models.CASCADE, related_name="items"
-    )
+    bill = models.ForeignKey(Bill, on_delete=models.CASCADE, related_name="items")
     description = models.CharField(max_length=255)
     quantity = models.IntegerField(default=1)
     unit_price_cents = models.IntegerField(default=0)
@@ -71,9 +69,7 @@ class BillLineItem(TenantModel):
 
 
 class Payment(TenantModel):
-    bill = models.ForeignKey(
-        Bill, on_delete=models.CASCADE, related_name="payments"
-    )
+    bill = models.ForeignKey(Bill, on_delete=models.CASCADE, related_name="payments")
     amount_cents = models.IntegerField()
     method = models.CharField(max_length=32, default="CASH")
     reference = models.CharField(max_length=255, blank=True)
