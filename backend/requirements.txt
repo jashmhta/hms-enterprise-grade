@@ -38,7 +38,7 @@ lxml==5.3.0
 requests==2.32.3
 
 # Circuit Breaker Pattern
-pybreaker==1.0.2
+pybreaker==1.4.0
 
 # Cryptography
 cryptography==43.0.1
