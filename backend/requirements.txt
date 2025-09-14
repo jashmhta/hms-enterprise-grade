@@ -29,7 +29,7 @@ whitenoise==6.7.0
 django-prometheus==2.3.1
 
 # Security
-argon2-cffi==23.1.0
+argon2-cffi==25.1.0
 django-cryptography==1.1
 
 # Data Processing
