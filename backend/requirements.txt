@@ -26,7 +26,7 @@ django-celery-beat==2.7.0
 # Monitoring and Logging
 sentry-sdk==2.13.0
 whitenoise==6.7.0
-django-prometheus==2.3.1
+django-prometheus==2.4.1
 
 # Security
 argon2-cffi==23.1.0
