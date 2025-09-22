@@ -24,7 +24,7 @@ django-redis==5.4.0
 django-celery-beat==2.7.0
 
 # Monitoring and Logging
-sentry-sdk==2.13.0
+sentry-sdk==2.38.0
 whitenoise==6.7.0
 django-prometheus==2.3.1
 
