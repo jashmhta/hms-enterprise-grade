@@ -19,7 +19,7 @@ django-storages==1.14.4
 
 # Task Queue and Caching
 celery==5.4.0
-redis==5.0.8
+redis==7.0.0
 django-redis==5.4.0
 django-celery-beat==2.7.0
 
